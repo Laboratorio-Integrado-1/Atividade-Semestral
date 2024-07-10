@@ -1,6 +1,6 @@
-module Robo (clock, reset, head, left, avancar, girar, under, rubble, recolher_entulho);
+module Robo (clock, reset, head, left, avancar, girar, under, barrier, recolher_entulho);
 // Inputs, Outputs, Registradores e Parâmetros
-input clock, reset, head, left, under, rubble;
+input clock, reset, head, left, under, barrier;
 output reg avancar, girar, recolher_entulho;
 reg [2:0] EstadoAtual, EstadoFuturo; // Corrigido para 3 bits, já que temos 5 estados
 reg [1:0] contador;
@@ -22,7 +22,7 @@ begin
     case (EstadoAtual)
         StandBy: 
 	begin
-            case ({head, left, under, rubble})
+            case ({head, left, under, barrier})
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b0??0: 
@@ -55,7 +55,7 @@ begin
         
         Avancando: 
 	begin
-            case ({head, left, under, rubble})
+            case ({head, left, under, barrier})
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b??1?: EstadoFuturo = StandBy;
@@ -90,7 +90,7 @@ begin
 
         Rotacionando:
 	 begin
-            case ({head, left, under, rubble})
+            case ({head, left, under, barrier})
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b0??0: 
@@ -117,7 +117,7 @@ begin
         
         Ret_Entulho: 
 	begin
-            case ({head, left, under, rubble})
+            case ({head, left, under, barrier})
                 4'b1???: EstadoFuturo = StandBy;
 
                 4'b0??0: 
@@ -138,7 +138,7 @@ begin
         
         Giros: 
 	begin
-            case ({head, left, under, rubble})
+            case ({head, left, under, barrier})
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b00?0: 

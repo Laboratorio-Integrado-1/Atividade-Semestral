@@ -10,8 +10,8 @@ wire avancar, girar, remover;
 
 reg [3:0] Mapa [0:10][0:19]; // Atualização para 10 linhas e 20 colunas
 reg [3:0] Linha_Robo;
-reg [4:0] Coluna_Robo;
-reg [1:0] Orientacao_Robo;
+reg [3:0] Coluna_Robo;
+reg [2:0] Orientacao_Robo;
 reg [39:0] String_Orientacao_Robo;
 integer entulho_life; // Vida do entulho, representa quantas iterações são necessárias para removê-lo
 
@@ -26,7 +26,7 @@ Controle control (
     .btn_step(btn_step)
 );
 
-Robo DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .avancar(avancar), .girar(girar), .remover(remover));
+Robo DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .avancar(avancar), .girar(girar), .recolher_entulho(remover));
 
 always
     #50 clock = !clock;
@@ -42,7 +42,7 @@ begin
     step_mode = 0; // Inicializa no modo contínuo
     entulho_life = 0; // Inicializa a vida do entulho como 0
 
-    $readmemb("Mapa.txt", Mapa); // Leitura do arquivo em formato decimal
+    $readmemh("Mapa.txt", Mapa); // Leitura do arquivo em formato decimal
 
     // Configuração do mapa 
     // 0: Caminho Livre -	Célula onde o robô pode se mover livremente.
@@ -73,38 +73,36 @@ begin
         end
         if (btn_step && step_mode) begin
             $display("Passo-a-passo: Pressione Enter para próximo passo...");
-            $fgetc(stdin);
         end
-
         @ (negedge clock);
         if (reset) begin
             // Recomeça o loop ao apertar o botão reset
             reset = 0;
-            continue;
-        end
-        Define_Sensores;
-        $display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
-        @ (negedge clock);
-        if (entulho_life > 0) begin
-            entulho_life = entulho_life - 1;
-            $display("Removendo entulho... %d ciclos restantes", entulho_life);
-            if (entulho_life == 0) begin
-                Mapa[Linha_Robo][Coluna_Robo] = 0;
-                $display("Entulho removido.");
-            end
         end else begin
-            Atualiza_Posicao_Robo;
-        end
-        case (Orientacao_Robo)
-            N: String_Orientacao_Robo = "Norte";
-            S: String_Orientacao_Robo = "Sul  ";
-            L: String_Orientacao_Robo = "Leste";
-            O: String_Orientacao_Robo = "Oeste";
-        endcase
-        $display ("Linha = %d Coluna = %d Orientacao = %s", Linha_Robo, Coluna_Robo, String_Orientacao_Robo);
-        if (Situacoes_Anomalas(1)) begin
-            $display("Estado Anômalo Detectado. Aguardando Reset...");
-            @ (negedge reset);
+            Define_Sensores;
+            $display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
+            @ (negedge clock);
+            if (entulho_life > 0) begin
+                entulho_life = entulho_life - 1;
+                $display("Removendo entulho... %d ciclos restantes", entulho_life);
+                if (entulho_life == 0) begin
+                    Mapa[Linha_Robo][Coluna_Robo] = 0;
+                    $display("Entulho removido.");
+                end
+            end else begin
+                Atualiza_Posicao_Robo;
+            end
+            case (Orientacao_Robo)
+                N: String_Orientacao_Robo = "Norte";
+                S: String_Orientacao_Robo = "Sul  ";
+                L: String_Orientacao_Robo = "Leste";
+                O: String_Orientacao_Robo = "Oeste";
+            endcase
+            $display ("Linha = %d Coluna = %d Orientacao = %s", Linha_Robo, Coluna_Robo, String_Orientacao_Robo);
+            if (Situacoes_Anomalas(1)) begin
+                $display("Estado Anômalo Detectado. Aguardando Reset...");
+                @ (negedge reset);
+            end
         end
     end
 end

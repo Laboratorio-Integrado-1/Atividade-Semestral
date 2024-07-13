@@ -1,61 +1,12 @@
-module graphic(clock, reset, pos_x, pos_y, o_red, o_blue, o_green);
-input clock, reset;
-//input [7:0] color;
-input pos_x;
-input pos_y; // descobrir tamanho dos bits de pos
-output [3:0] o_red, o_blue, o_green;
+module Graphic(clock, mapa)
+input clock
+input mapa [3:0] Mapa [0:10][0:19];
 
-reg [9:0] counter_x = 0;  // horizontal counter
-reg [9:0] counter_y = 0;  // vertical counter
-reg [3:0] r_red = 0;
-reg [3:0] r_blue = 0;
-reg [3:0] r_green = 0;
-
-wire clk25MHz;
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// clk divider 50 MHz to 25 MHz
-ip ip1(
-	.areset(reset),
-	.inclk0(clk),
-	.c0(clk25MHz),
-	.locked()
-	);  
-// end clk divider 50 MHz to 25 MHz
-
-always @(posedge clk25MHz)  // horizontal counter
-	begin 
-		if (counter_x < 799)
-			counter_x <= counter_x + 1;  // horizontal counter (including off-screen horizontal 160 pixels) total of 800 pixels 
-		else
-			counter_x <= 0;              
-	end  // always 
-
-always @ (posedge clk25MHz)  // vertical counter
-	begin 
-		if (counter_x == 799)  // only counts up 1 count after horizontal finishes 800 counts
-			begin
-				if (counter_y < 525)  // vertical counter (including off-screen vertical 45 pixels) total of 525 pixels
-					counter_y <= counter_y + 1;
-				else
-					counter_y <= 0;              
-			end  // if (counter_x...
-	end  // always	
-
-	
-// por hora apenas sprite todo branco
-always @ (posedge clk)
-		begin
-			if(counter_x >= pos_x && counter_x <= pos_x+8)
-				if(counter_y >= pos_y && counter_y <= pos_y+8)
-					begin
-						r_red <= 4'hf; // branco
-						r_blue <= 4'hf;
-						r_green <= 4'hf;
-					end	
-		end
-		
-	assign o_red = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_red : 4'h0;
-	assign o_blue = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_blue : 4'h0;
-	assign o_green = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_green : 4'h0;
+ // Configuração do mapa 
+ // 0: Caminho Livre -	Célula onde o robô pode se mover livremente.
+ // 1: Parede - Obstáculo que impede o movimento do robô.
+ // 2: Célula Preta - Célula que indica o inicio ou final de uma tubulação.
+ // 3: Entulho Leve - Entulho que requer 3 ciclos para ser removido.
+ // 4: Entulho Médio - Entulho que requer 6 ciclos para ser removido.
+ // 5: Entulho Pesado - Entulho que requer 9 ciclos para ser removido.
 endmodule

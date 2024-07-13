@@ -1,1 +1,1 @@
-Module graphic(clock, reset, head, left, avancar, girar, under, barrier, recolher_entulho):
+module Graphic(clock, reset, map)

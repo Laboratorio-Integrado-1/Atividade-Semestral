@@ -1,4 +1,4 @@
-module Robo (clock, reset, head, left, avancar, girar, under, barrier, recolher_entulho);
+module Robo (clock, reset, head, left, under, barrier, avancar, girar, recolher_entulho);
 // Inputs, Outputs, Registradores e Parâmetros
 input clock, reset, head, left, under, barrier;		// Sinais de Entrada
 output reg avancar, girar, recolher_entulho;		// Sinais de Saída

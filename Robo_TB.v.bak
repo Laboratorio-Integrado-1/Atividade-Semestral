@@ -20,7 +20,7 @@ integer entulho_life; // Vida do entulho, representa quantas iterações são ne
 reg [79:0] temp [0:10]; // Array temporário para armazenar linhas lidas
 integer i, j;
 
-// Instância do móddlo de controle
+// Instância do módulo de controle
 // O controle inicialmente prevê 3 botões
 wire btn_reset, btn_mode, btn_step;
 Controle control (
@@ -90,10 +90,7 @@ begin
       $write("\n");
     end
 
-    if (Situacoes_Anomalas(1)) begin
-	$display("Celula Mapa : %h", Mapa[Linha_Robo][Coluna_Robo]);
-	$stop;
-    end
+    if (Situacoes_Anomalas(1)) $stop;
 
     #100 @ (negedge clock) reset = 0; // sincroniza com borda de descida
 

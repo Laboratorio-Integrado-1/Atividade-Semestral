@@ -1,12 +1,12 @@
 module Robo (clock, reset, head, left, under, barrier, avancar, girar, recolher_entulho);
-// Inputs, Outputs, Registradores e Parâmetros
+// Inputs, Outputs, Registradores e Parï¿½metros
 input clock, reset, head, left, under, barrier;		// Sinais de Entrada
-output reg avancar, girar, recolher_entulho;		// Sinais de Saída
+output reg avancar, girar, recolher_entulho;		// Sinais de Saï¿½da
 reg [2:0] EstadoAtual, EstadoFuturo; 			// Registrador de 3 bits p/ 5 estados
-reg [1:0] contador;					// Registrador p/ contador de saída recolher entulho
+reg [1:0] contador;					// Registrador p/ contador de saï¿½da recolher entulho
 reg flag_Stop;						// Registrador p/ flag de parada do StandBy
 
-// Parâmetros do Código (Estados da Máquina de Estados)
+// Parï¿½metros do Cï¿½digo (Estados da Mï¿½quina de Estados)
 parameter StandBy = 3'b000,
           Avancando = 3'b001,
           Rotacionando = 3'b010,
@@ -14,28 +14,28 @@ parameter StandBy = 3'b000,
           Giros = 3'b100;
 
           
-// Definição FSM
+// Definiï¿½ï¿½o FSM
 always @* 
 begin
-// Reset dos Sinais de Saída a cada ciclo
+// Reset dos Sinais de Saï¿½da a cada ciclo
     avancar = 1'b0;
     girar = 1'b0;
     recolher_entulho = 1'b0;
 
-// Estrutura Switch-Case p/ Verificação de Estado Atual + Escolha de Próximo Estado
+// Estrutura Switch-Case p/ Verificaï¿½ï¿½o de Estado Atual + Escolha de Prï¿½ximo Estado
     case (EstadoAtual)
-	// Situações possíveis definidas
+	// Situaï¿½ï¿½es possï¿½veis definidas
         StandBy: 
 	begin
 	if (flag_Stop)
 	    begin
-	    	EstadoFuturo = StandBy; // Mantém em StandBy caso flag_Stop estiver ativada
+	    	EstadoFuturo = StandBy; // Mantï¿½m em StandBy caso flag_Stop estiver ativada
 	    end
 
 	else
 	    begin
-            	case ({head, left, under, barrier})
-		// Situações Previstas
+            	casez ({head, left, under, barrier})
+		// Situaï¿½ï¿½es Previstas
                 	4'b1??1: EstadoFuturo = StandBy;
 
                 	4'b0??0: 
@@ -69,8 +69,8 @@ begin
         
         Avancando: 
 	begin
-            case ({head, left, under, barrier})
-	    // Situações Previstas
+            casez ({head, left, under, barrier})
+	    // Situaï¿½ï¿½es Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b??1?: EstadoFuturo = StandBy;
@@ -105,8 +105,8 @@ begin
 
         Rotacionando:
 	 begin
-            case ({head, left, under, barrier})
-	    // Situações Previstas
+            casez ({head, left, under, barrier})
+	    // Situaï¿½ï¿½es Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b0??0: 
@@ -133,8 +133,8 @@ begin
         
         Ret_Entulho: 
 	begin
-            case ({head, left, under, barrier})
-	    // Situações Previstas
+            casez ({head, left, under, barrier})
+	    // Situaï¿½ï¿½es Previstas
                 4'b1???: EstadoFuturo = StandBy;
 
                 4'b0??0: 
@@ -155,8 +155,8 @@ begin
         
         Giros: 
 	begin
-            case ({head, left, under, barrier})
-	    // Situações Previstas
+            casez ({head, left, under, barrier})
+	    // Situaï¿½ï¿½es Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 
                 4'b00?0: 
@@ -197,41 +197,41 @@ begin
     endcase
 end
 
-// Atualização de Estado e Reset
+// Atualizaï¿½ï¿½o de Estado e Reset
 always @(negedge clock or posedge reset) 
 begin
-    if (reset)						// Verificação se botão Reset foi presionado
+    if (reset)						// Verificaï¿½ï¿½o se botï¿½o Reset foi presionado
 	begin
         	EstadoAtual <= StandBy;			// Estado Inicial/Reset
-		contador <= 2'b00;			// Contador de Pulsos (Ret_Entulho) setado para 0
-		flag_Stop <= 1'b0;			// Flag de botão Reset desativada
+		//contador <= 2'b00;			// Contador de Pulsos (Ret_Entulho) setado para 0
+		flag_Stop <= 1'b0;			// Flag de botï¿½o Reset desativada
 	end
 
     else 
 	begin
-		if (EstadoAtual == StandBy && flag_Stop)			// Caso Robô entrou no Estado StandBy e não foi aplicado Reset
+		if (EstadoAtual == StandBy && flag_Stop)			// Caso Robï¿½ entrou no Estado StandBy e nï¿½o foi aplicado Reset
 			begin
 				EstadoAtual <= StandBy;
 			end
 		
-		else if (EstadoAtual == Ret_Entulho && contador != 2'b11)	// Caso Robô entrou no Estado Recolher Entulho e não se passou 3 pulsos de remoção
-			begin	
-				contador <= contador + 1;
-			end
+		//else if (EstadoAtual == Ret_Entulho )//&& contador != 2'b11)	// Caso Robï¿½ entrou no Estado Recolher Entulho e nï¿½o se passou 3 pulsos de remoï¿½ï¿½o
+			//begin	
+			//	contador <= contador + 1;
+			//end
 		
 		else
 			begin
 				EstadoAtual <= EstadoFuturo;
 				
-				if (EstadoAtual == StandBy)			// Caso Robô entre em Estado StandBy é necessário que permaneça parado até sinal de Reset
+				if (EstadoFuturo == StandBy)			// Caso Robï¿½ entre em Estado StandBy ï¿½ necessï¿½rio que permaneï¿½a parado atï¿½ sinal de Reset
 					begin
 						flag_Stop <= 1'b1;
 					end
 
-				if (EstadoAtual != Ret_Entulho)			// Caso Robô não entre em Remover Entulho, Reset de contador de pulsos
-					begin
-						contador <= 2'b00;
-					end
+				//if (EstadoAtual != Ret_Entulho)			// Caso Robï¿½ nï¿½o entre em Remover Entulho, Reset de contador de pulsos
+					//begin
+						//contador <= 2'b00;
+					//end
 			end
 	end
 end

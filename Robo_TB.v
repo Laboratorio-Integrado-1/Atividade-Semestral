@@ -5,24 +5,24 @@ module Robo_TB;
 parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
 
 reg clock, reset, head, left, under, barrier;
-reg step_mode; // Registrador para modo de execução
+reg step_mode; // Registrador para modo de execucao
 wire avancar, girar, remover;
 
-reg [3:0] Mapa [0:10][0:19]; // Atualização para 10 linhas e 20 colunas
+reg [3:0] Mapa [0:10][0:19]; // Atualizacao para 10 linhas e 20 colunas
 reg [7:0] Linha_Robo;
 reg [7:0] Coluna_Robo;
 reg [3:0] Orientacao_Hex; 
 reg [7:0] Orientacao_Robo;
 reg [39:0] String_Orientacao_Robo;
-integer entulho_life; // Vida do entulho, representa quantas iterações são necessárias para removê-lo
+integer entulho_life; // Vida do entulho, representa quantas iteracoes são necessarias para remove-lo
 reg [7:0] Celula_Mapa;
 
-// Inicializa parâmetros do robô a partir da primeira linha do arquivo
-reg [79:0] temp [0:10]; // Array temporário para armazenar linhas lidas
+// Inicializa parametros do robo a partir da primeira linha do arquivo
+reg [79:0] temp [0:10]; // Array temporario para armazenar linhas lidas
 integer i, j;
 
-// Instância do móddlo de controle
-// O controle inicialmente prevê 3 botões
+// Instância do modulo de controle
+// O controle inicialmente preve 3 botoes
 wire btn_reset, btn_mode, btn_step;
 Controle control (
     .clock(clock),
@@ -49,11 +49,11 @@ begin
     entulho_life = 0; // Inicializa a vida do entulho como 0
 
     // Configuração do mapa 
-    // 0: Caminho Livre -	Célula onde o robô pode se mover livremente.
-    // 1: Parede - Obstáculo que impede o movimento do robô.
-    // 2: Célula Preta - Célula que indica o inicio ou final de uma tubulação.
+    // 0: Caminho Livre -	Celula onde o robô pode se mover livremente.
+    // 1: Parede - Obstaculo que impede o movimento do robô.
+    // 2: Celula Preta - Célula que indica o inicio ou final de uma tubulacao.
     // 3: Entulho Leve - Entulho que requer 3 ciclos para ser removido.
-    // 4: Entulho Médio - Entulho que requer 6 ciclos para ser removido.
+    // 4: Entulho Medio - Entulho que requer 6 ciclos para ser removido.
     // 5: Entulho Pesado - Entulho que requer 9 ciclos para ser removido.
 
     $readmemh("Mapa.txt", temp);
@@ -62,7 +62,7 @@ begin
     Coluna_Robo = temp[0][71:64]; // (0º linha, 2-3 caracteres)
     Orientacao_Hex = temp[0][63:60]; // (0º linha, 4º caractere)
     
-    // Converter o valor hexadecimal da orientação para a string correspondente
+    // Converter o valor hexadecimal da orientacao para a string correspondente
     case (Orientacao_Hex)
       4'h0: Orientacao_Robo = "N"; // 0 -> N
       4'h1: Orientacao_Robo = "O"; // 1 -> O
@@ -78,7 +78,7 @@ begin
       end
     end
 
-    // Print dos parâmetros iniciais
+    // Print dos parametros iniciais
 
     $display ("Linha = %h Coluna = %h Orientacao = %s", Linha_Robo, Coluna_Robo, Orientacao_Robo);
 
@@ -107,7 +107,7 @@ begin
             reset = ~reset; // Induz o reset ou sai do modo reset
         end
         if (btn_mode) begin
-            step_mode = ~step_mode; // Alternar modo de execução
+            step_mode = ~step_mode; // Alternar modo de execucão
         end
         if (btn_step && step_mode) begin
             $display("Passo-a-passo: Pressione Enter para próximo passo...");
@@ -147,28 +147,28 @@ task Define_Sensores;
 begin
     case (Orientacao_Robo)
         N: begin
-                // Definição de head
-                if (Linha_Robo == 0) // Situação de borda do mapa
+                // Definicao de head
+                if (Linha_Robo == 0) // Situacao de borda do mapa
                     head = 1;
                 else
                     head = (Mapa[Linha_Robo - 1][Coluna_Robo] == 1) ? 1 : 0;
 
-                // Definição de left
-                if (Coluna_Robo == 0) // Situação de borda do mapa
+                // Definiacao de left
+                if (Coluna_Robo == 0) // Situacao de borda do mapa
                     left = 1;
                 else
                     left = (Mapa[Linha_Robo][Coluna_Robo - 1] == 1) ? 1 : 0;
 
-                // Definição de under
+                // Definicao de under
                 under = (Mapa[Linha_Robo][Coluna_Robo] == 2) ? 1 : 0;
 
                 // Definição de barrier
-                if (Linha_Robo == 0) // Situação de borda do mapa
+                if (Linha_Robo == 0) // Situacao de borda do mapa
                     barrier = 0;
                 else if (Mapa[Linha_Robo - 1][Coluna_Robo] >= 3) begin
                     case (Mapa[Linha_Robo - 1][Coluna_Robo])
                          3: entulho_life = 3; // Entulho leve
-                         4: entulho_life = 6; // Entulho m�dio
+                         4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
                     barrier = 1;
@@ -177,28 +177,28 @@ begin
                 end
             end
         S: begin
-                // Definição de head
+                // Definicao de head
                 if (Linha_Robo == 9)
                     head = 1;
                 else
                     head = (Mapa[Linha_Robo + 1][Coluna_Robo] == 1) ? 1 : 0;
 
-                // Definição de left
+                // Definicao de left
                 if (Coluna_Robo == 19)
                     left = 1;
                 else
                     left = (Mapa[Linha_Robo][Coluna_Robo + 1] == 1) ? 1 : 0;
 
-                // Definição de under
+                // Definicao de under
                 under = (Mapa[Linha_Robo][Coluna_Robo] == 2) ? 1 : 0;
 
-                // Definição de barrier
+                // Definicao de barrier
                 if (Linha_Robo == 9)
                     barrier = 0;
                 else if (Mapa[Linha_Robo + 1][Coluna_Robo] >= 3) begin
                     case (Mapa[Linha_Robo + 1][Coluna_Robo])
                          3: entulho_life = 3; // Entulho leve
-                         4: entulho_life = 6; // Entulho m�dio
+                         4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
                     barrier = 1;
@@ -207,28 +207,28 @@ begin
                 end
             end
         L: begin
-                // Definição de head
+                // Definicao de head
                 if (Coluna_Robo == 19)
                     head = 1;
                 else
                     head = (Mapa[Linha_Robo][Coluna_Robo + 1] == 1) ? 1 : 0;
 
-                // Definição de left
+                // Definicao de left
                 if (Linha_Robo == 0)
                     left = 1;
                 else
                     left = (Mapa[Linha_Robo - 1][Coluna_Robo] == 1) ? 1 : 0;
 
-                // Definição de under
+                // Definicao de under
                 under = (Mapa[Linha_Robo][Coluna_Robo] == 2) ? 1 : 0;
 
-                // Definição de barrier
+                // Definicao de barrier
                 if (Coluna_Robo == 19)
                     barrier = 0;
                 else if (Mapa[Linha_Robo][Coluna_Robo + 1] >= 3) begin
                     case (Mapa[Linha_Robo][Coluna_Robo + 1])
                          3: entulho_life = 3; // Entulho leve
-                         4: entulho_life = 6; // Entulho m�dio
+                         4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
                     barrier = 1;
@@ -237,28 +237,28 @@ begin
                 end
             end
         O: begin
-                // Definição de head
+                // Definicao de head
                 if (Coluna_Robo == 0)
                     head = 1;
                 else
                     head = (Mapa[Linha_Robo][Coluna_Robo - 1] == 1) ? 1 : 0;
 
-                // Definição de left
+                // Definicao de left
                 if (Linha_Robo == 9)
                     left = 1;
                 else
                     left = (Mapa[Linha_Robo + 1][Coluna_Robo] == 1) ? 1 : 0;
 
-                // Definição de under
+                // Definicao de under
                 under = (Mapa[Linha_Robo][Coluna_Robo] == 2) ? 1 : 0;
 
-                // Definição de barrier
+                // Definicao de barrier
                 if (Coluna_Robo == 0)
                     barrier = 0;
                 else if (Mapa[Linha_Robo][Coluna_Robo - 1] >= 3) begin
                     case (Mapa[Linha_Robo][Coluna_Robo - 1])
                          3: entulho_life = 3; // Entulho leve
-                         4: entulho_life = 6; // Entulho m�dio
+                         4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
                     barrier = 1;

@@ -64,10 +64,10 @@ begin
     
     // Converter o valor hexadecimal da orientacao para a string correspondente
     case (Orientacao_Hex)
-      4'h0: Orientacao_Robo = "N"; // 0 -> N
-      4'h1: Orientacao_Robo = "O"; // 1 -> O
-      4'h2: Orientacao_Robo = "S"; // 2 -> S
-      4'h3: Orientacao_Robo = "L"; // 3 -> L
+      4'h0: Orientacao_Robo = N; // 0 -> N
+      4'h1: Orientacao_Robo = O; // 1 -> O
+      4'h2: Orientacao_Robo = S; // 2 -> S
+      4'h3: Orientacao_Robo = L; // 3 -> L
       default: Orientacao_Robo = "X"; // Valor desconhecido
     endcase
 
@@ -112,6 +112,7 @@ begin
         if (btn_step && step_mode) begin
             $display("Passo-a-passo: Pressione Enter para próximo passo...");
         end
+	    // @ (negedge clock);
             Define_Sensores;
             $display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
             @ (negedge clock);
@@ -166,11 +167,13 @@ begin
                 if (Linha_Robo == 0) // Situacao de borda do mapa
                     barrier = 0;
                 else if (Mapa[Linha_Robo - 1][Coluna_Robo] >= 3) begin
+                    if (entulho_life == 0) begin
                     case (Mapa[Linha_Robo - 1][Coluna_Robo])
                          3: entulho_life = 3; // Entulho leve
                          4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
+		    end
                     barrier = 1;
                 end else begin
                     barrier = 0;
@@ -196,11 +199,13 @@ begin
                 if (Linha_Robo == 9)
                     barrier = 0;
                 else if (Mapa[Linha_Robo + 1][Coluna_Robo] >= 3) begin
+                    if (entulho_life == 0) begin
                     case (Mapa[Linha_Robo + 1][Coluna_Robo])
                          3: entulho_life = 3; // Entulho leve
                          4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
+		    end
                     barrier = 1;
                 end else begin
                     barrier = 0;
@@ -226,11 +231,13 @@ begin
                 if (Coluna_Robo == 19)
                     barrier = 0;
                 else if (Mapa[Linha_Robo][Coluna_Robo + 1] >= 3) begin
+                    if (entulho_life == 0) begin
                     case (Mapa[Linha_Robo][Coluna_Robo + 1])
                          3: entulho_life = 3; // Entulho leve
                          4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
+		    end
                     barrier = 1;
                 end else begin
                     barrier = 0;
@@ -256,11 +263,13 @@ begin
                 if (Coluna_Robo == 0)
                     barrier = 0;
                 else if (Mapa[Linha_Robo][Coluna_Robo - 1] >= 3) begin
+		    if (entulho_life == 0) begin
                     case (Mapa[Linha_Robo][Coluna_Robo - 1])
                          3: entulho_life = 3; // Entulho leve
                          4: entulho_life = 6; // Entulho medio
                          5: entulho_life = 9; // Entulho pesado
                     endcase
+		    end
                     barrier = 1;
                 end else begin
                     barrier = 0;
@@ -276,8 +285,28 @@ begin
         entulho_life = entulho_life - 1;
         $display("Removendo entulho... %d ciclos restantes", entulho_life);
         if (entulho_life == 0) begin
-            Mapa[Linha_Robo][Coluna_Robo] = 0;
-            $display("Entulho removido.");
+	    case (Orientacao_Robo)
+		N: begin
+			Mapa[Linha_Robo - 1][Coluna_Robo] = 0;
+		end
+		S: begin
+			Mapa[Linha_Robo + 1][Coluna_Robo] = 0;
+		end
+		L: begin
+			Mapa[Linha_Robo][Coluna_Robo + 1] = 0;
+		end		
+		O: begin
+			Mapa[Linha_Robo][Coluna_Robo - 1] = 0;
+		end
+		
+            endcase
+	for (i = 0; i < 10; i = i + 1) begin
+        	for (j = 0; j < 20; j = j + 1) begin
+            		$write("%h", Mapa[i][j]);
+        	end
+      		$write("\n");
+    	end
+        $display("Entulho removido.");
         end
     end else begin
         case (Orientacao_Robo)

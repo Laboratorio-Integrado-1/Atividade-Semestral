@@ -123,6 +123,16 @@ begin
                 L: String_Orientacao_Robo = "Leste";
                 O: String_Orientacao_Robo = "Oeste";
             endcase
+            for (i = 0; i < 10; i = i + 1) begin
+                for (j = 0; j < 20; j = j + 1) begin
+                    if (i == Linha_Robo && j == Coluna_Robo) begin
+                        $write("%s", "R");
+                    else begin
+                        $write("%h", Mapa[i][j]);
+                    end
+                end
+            $write("\n");
+            end
             $display ("Linha = %d Coluna = %d Orientacao = %s", Linha_Robo, Coluna_Robo, String_Orientacao_Robo);
             if (Situacoes_Anomalas(1)) begin
                 $display("Estado Anômalo Detectado. Aguardando Reset...");

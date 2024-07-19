@@ -15,6 +15,7 @@ reg [3:0] Orientacao_Hex;
 reg [7:0] Orientacao_Robo;
 reg [39:0] String_Orientacao_Robo;
 integer entulho_life; // Vida do entulho, representa quantas iterações são necessárias para removê-lo
+reg [7:0] Celula_Mapa;
 
 // Inicializa parâmetros do robô a partir da primeira linha do arquivo
 reg [79:0] temp [0:10]; // Array temporário para armazenar linhas lidas
@@ -90,6 +91,8 @@ begin
       $write("\n");
     end
 
+    Celula_Mapa = Mapa[Linha_Robo][Coluna_Robo];
+
     if (Situacoes_Anomalas(1)) begin
 	$display("Celula Mapa : %h", Mapa[Linha_Robo][Coluna_Robo]);
 	$stop;
@@ -109,24 +112,10 @@ begin
         if (btn_step && step_mode) begin
             $display("Passo-a-passo: Pressione Enter para próximo passo...");
         end
-        @ (negedge clock);
-        if (reset) begin
-            // Recomeça o loop ao apertar o botão reset
-            reset = 0;
-        end else begin
             Define_Sensores;
             $display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
             @ (negedge clock);
-            if (entulho_life > 0) begin
-                entulho_life = entulho_life - 1;
-                $display("Removendo entulho... %d ciclos restantes", entulho_life);
-                if (entulho_life == 0) begin
-                    Mapa[Linha_Robo][Coluna_Robo] = 0;
-                    $display("Entulho removido.");
-                end
-            end else begin
-                Atualiza_Posicao_Robo;
-            end
+            Atualiza_Posicao_Robo;
             case (Orientacao_Robo)
                 N: String_Orientacao_Robo = "Norte";
                 S: String_Orientacao_Robo = "Sul  ";
@@ -137,8 +126,7 @@ begin
             if (Situacoes_Anomalas(1)) begin
                 $display("Estado Anômalo Detectado. Aguardando Reset...");
                 @ (negedge reset);
-            end
-        end
+            end 
     end
 end
 
@@ -149,7 +137,7 @@ begin
         Situacoes_Anomalas = 1;
     else
     begin
-        if (Mapa[Linha_Robo][Coluna_Robo] == 1)
+        if (Mapa[Linha_Robo][Coluna_Robo] == 1 || Mapa[Linha_Robo][Coluna_Robo] >= 3)
             Situacoes_Anomalas = 1;
     end
 end
@@ -177,8 +165,16 @@ begin
                 // Definição de barrier
                 if (Linha_Robo == 0) // Situação de borda do mapa
                     barrier = 0;
-                else
-                    barrier = (Mapa[Linha_Robo - 1][Coluna_Robo] >= 3) ? 1 : 0;
+                else if (Mapa[Linha_Robo - 1][Coluna_Robo] >= 3) begin
+                    case (Mapa[Linha_Robo - 1][Coluna_Robo])
+                         3: entulho_life = 3; // Entulho leve
+                         4: entulho_life = 6; // Entulho m�dio
+                         5: entulho_life = 9; // Entulho pesado
+                    endcase
+                    barrier = 1;
+                end else begin
+                    barrier = 0;
+                end
             end
         S: begin
                 // Definição de head
@@ -199,8 +195,16 @@ begin
                 // Definição de barrier
                 if (Linha_Robo == 9)
                     barrier = 0;
-                else
-                    barrier = (Mapa[Linha_Robo + 1][Coluna_Robo] >= 3) ? 1 : 0;
+                else if (Mapa[Linha_Robo + 1][Coluna_Robo] >= 3) begin
+                    case (Mapa[Linha_Robo + 1][Coluna_Robo])
+                         3: entulho_life = 3; // Entulho leve
+                         4: entulho_life = 6; // Entulho m�dio
+                         5: entulho_life = 9; // Entulho pesado
+                    endcase
+                    barrier = 1;
+                end else begin
+                    barrier = 0;
+                end
             end
         L: begin
                 // Definição de head
@@ -221,8 +225,16 @@ begin
                 // Definição de barrier
                 if (Coluna_Robo == 19)
                     barrier = 0;
-                else
-                    barrier = (Mapa[Linha_Robo][Coluna_Robo + 1] >= 3) ? 1 : 0;
+                else if (Mapa[Linha_Robo][Coluna_Robo + 1] >= 3) begin
+                    case (Mapa[Linha_Robo][Coluna_Robo + 1])
+                         3: entulho_life = 3; // Entulho leve
+                         4: entulho_life = 6; // Entulho m�dio
+                         5: entulho_life = 9; // Entulho pesado
+                    endcase
+                    barrier = 1;
+                end else begin
+                    barrier = 0;
+                end
             end
         O: begin
                 // Definição de head
@@ -243,8 +255,16 @@ begin
                 // Definição de barrier
                 if (Coluna_Robo == 0)
                     barrier = 0;
-                else
-                    barrier = (Mapa[Linha_Robo][Coluna_Robo - 1] >= 3) ? 1 : 0;
+                else if (Mapa[Linha_Robo][Coluna_Robo - 1] >= 3) begin
+                    case (Mapa[Linha_Robo][Coluna_Robo - 1])
+                         3: entulho_life = 3; // Entulho leve
+                         4: entulho_life = 6; // Entulho m�dio
+                         5: entulho_life = 9; // Entulho pesado
+                    endcase
+                    barrier = 1;
+                end else begin
+                    barrier = 0;
+                end
             end
     endcase
 end
@@ -252,82 +272,59 @@ endtask
 
 task Atualiza_Posicao_Robo;
 begin
-    case (Orientacao_Robo)
-        N: begin
-                if (avancar)
-                begin
-                    Linha_Robo = Linha_Robo - 1;
+    if (entulho_life > 0 && remover) begin
+        entulho_life = entulho_life - 1;
+        $display("Removendo entulho... %d ciclos restantes", entulho_life);
+        if (entulho_life == 0) begin
+            Mapa[Linha_Robo][Coluna_Robo] = 0;
+            $display("Entulho removido.");
+        end
+    end else begin
+        case (Orientacao_Robo)
+            N: begin
+                    if (avancar)
+                    begin
+                        Linha_Robo = Linha_Robo - 1;
+                    end
+                    else if (girar)
+                    begin
+                        Orientacao_Robo = O;
+                    end
                 end
-                else if (girar)
-                begin
-                    Orientacao_Robo = O;
+            S: begin
+                    if (avancar)
+                    begin
+                        Linha_Robo = Linha_Robo + 1;
+                    end
+                    else if (girar)
+                    begin
+                        Orientacao_Robo = L;
+                    end
                 end
-                else if (remover && Mapa[Linha_Robo - 1][Coluna_Robo] >= 3)
-                begin
-                    case (Mapa[Linha_Robo - 1][Coluna_Robo])
-                        3: entulho_life = 3; // Entulho leve
-                        4: entulho_life = 6; // Entulho médio
-                        5: entulho_life = 9; // Entulho pesado
-                    endcase
+            L: begin
+                    if (avancar)
+                    begin
+                        Coluna_Robo = Coluna_Robo + 1;
+                    end
+                    else if (girar)
+                    begin
+                        Orientacao_Robo = N;
+                    end
                 end
-            end
-        // Definições para S, L e O são similares
-        S: begin
-                if (avancar)
-                begin
-                    Linha_Robo = Linha_Robo + 1;
+            O: begin
+                    if (avancar)
+                    begin
+                        Coluna_Robo = Coluna_Robo - 1;
+                    end
+                    else if (girar)
+                    begin
+                        Orientacao_Robo = S;
+                    end
                 end
-                else if (girar)
-                begin
-                    Orientacao_Robo = L;
-                end
-                else if (remover && Mapa[Linha_Robo + 1][Coluna_Robo] >= 3)
-                begin
-                    case (Mapa[Linha_Robo + 1][Coluna_Robo])
-                        3: entulho_life = 3; // Entulho leve
-                        4: entulho_life = 6; // Entulho médio
-                        5: entulho_life = 9; // Entulho pesado
-                    endcase
-                end
-            end
-        L: begin
-                if (avancar)
-                begin
-                    Coluna_Robo = Coluna_Robo + 1;
-                end
-                else if (girar)
-                begin
-                    Orientacao_Robo = N;
-                end
-                else if (remover && Mapa[Linha_Robo][Coluna_Robo + 1] >= 3)
-                begin
-                    case (Mapa[Linha_Robo][Coluna_Robo + 1])
-                        3: entulho_life = 3; // Entulho leve
-                        4: entulho_life = 6; // Entulho médio
-                        5: entulho_life = 9; // Entulho pesado
-                    endcase
-                end
-            end
-        O: begin
-                if (avancar)
-                begin
-                    Coluna_Robo = Coluna_Robo - 1;
-                end
-                else if (girar)
-                begin
-                    Orientacao_Robo = S;
-                end
-                else if (remover && Mapa[Linha_Robo][Coluna_Robo - 1] >= 3)
-                begin
-                    case (Mapa[Linha_Robo][Coluna_Robo - 1])
-                        3: entulho_life = 3; // Entulho leve
-                        4: entulho_life = 6; // Entulho médio
-                        5: entulho_life = 9; // Entulho pesado
-                    endcase
-                end
-            end
-    endcase
+        endcase
+    end
 end
 endtask
 
 endmodule
+

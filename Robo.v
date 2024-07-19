@@ -34,7 +34,7 @@ begin
 
 	else
 	    begin
-            	case ({head, left, under, barrier})
+            	casez ({head, left, under, barrier})
 		// Situações Previstas
                 	4'b1??1: EstadoFuturo = StandBy;
 
@@ -69,7 +69,7 @@ begin
         
         Avancando: 
 	begin
-            case ({head, left, under, barrier})
+            casez ({head, left, under, barrier})
 	    // Situações Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 
@@ -105,7 +105,7 @@ begin
 
         Rotacionando:
 	 begin
-            case ({head, left, under, barrier})
+            casez ({head, left, under, barrier})
 	    // Situações Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 
@@ -133,7 +133,7 @@ begin
         
         Ret_Entulho: 
 	begin
-            case ({head, left, under, barrier})
+            casez ({head, left, under, barrier})
 	    // Situações Previstas
                 4'b1???: EstadoFuturo = StandBy;
 
@@ -155,7 +155,7 @@ begin
         
         Giros: 
 	begin
-            case ({head, left, under, barrier})
+            casez ({head, left, under, barrier})
 	    // Situações Previstas
                 4'b1??1: EstadoFuturo = StandBy;
 

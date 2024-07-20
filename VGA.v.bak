@@ -1,10 +1,9 @@
-module VGA(clock, reset, icon, pos_x, pos_y, o_red, o_green, o_blue);
+module VGA(clock, reset, pos_x, pos_y, o_red, o_blue, o_green);
 input clock, reset;
 //input [7:0] color;
 input [4:0] pos_x;
-input [4:0] pos_y;
-input string icon;
-output [7:0] o_red, o_green, o_blue;
+input [4:0] pos_y; // descobrir tamanho dos bits de pos
+output [7:0] o_red, o_blue, o_green;
 
 reg [9:0] counter_x = 0;  // horizontal counter
 reg [9:0] counter_y = 0;  // vertical counter
@@ -50,21 +49,13 @@ always @ (posedge clk)
 			if(counter_x >= pos_x && counter_x <= pos_x + 16)
 				if(counter_y >= pos_y && counter_y <= pos_y + 16)
 					begin
-						if(icon == '0') begin
-							r_red <= 8'hf; // branco
-							r_blue <= 8'hf;
-							r_green <= 8'hf; 
-							end
-						if(icon == '1') befin
-							r_red <= 8'0; // preto
-							r_blue <= 8'0;
-							r_green <= 8'0; 
-							end
-						
+						r_red <= 8'hf; // branco
+						r_blue <= 8'hf;
+						r_green <= 8'hf;
 					end
 		end
-	
-	assign o_red = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_red;
-	assign o_blue = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_blue;
-	assign o_green = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_green;
+		
+	assign o_red = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_red : 4'h0;
+	assign o_blue = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_blue : 4'h0;
+	assign o_green = (counter_x > 144 && counter_x <= 783 && counter_y > 35 && counter_y <= 514) ? r_green : 4'h0;
 endmodule

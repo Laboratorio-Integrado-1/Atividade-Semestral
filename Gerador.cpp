@@ -58,8 +58,8 @@ int aleatorio(int a, int b){
 
 
 void adicionarParams(int entrada_x, int entrada_y, int dir){
-    mapa[0][0] = entrada_x/10, mapa[0][1] = entrada_x % 10;
-    mapa[0][2] = entrada_y/10, mapa[0][3] = entrada_y % 10;
+    mapa[0][0] = entrada_x/16, mapa[0][1] = entrada_x % 16;
+    mapa[0][2] = entrada_y/16, mapa[0][3] = entrada_y % 16;
     mapa[0][4] = orientacoes[dir];
 }
 
@@ -99,8 +99,12 @@ int main(){
 
     std::ofstream gerador;
     gerador.open("Mapa.txt");
-    
-    for(int i = 0; i < H; ++i){
+
+    for(int j = 0; j < W; ++j){
+        j < 4 ? gerador << std::hex << std::uppercase << mapa[0][j] : gerador << mapa[0][j];
+    }
+    gerador << '\n';
+    for(int i = 1; i < H; ++i){
         for(int j = 0; j < W; ++j){
             gerador << mapa[i][j];
         }

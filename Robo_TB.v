@@ -127,7 +127,7 @@ begin
                 for (j = 0; j < 20; j = j + 1) begin
                     if (i == Linha_Robo && j == Coluna_Robo) begin
                         $write("%s", "R");
-                    else begin
+                    end else begin
                         $write("%h", Mapa[i][j]);
                     end
                 end

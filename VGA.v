@@ -55,12 +55,11 @@ always @ (posedge clk)
 							r_blue <= 8'hf;
 							r_green <= 8'hf; 
 							end
-						if(icon == '1') befin
+						if(icon == '1') begin
 							r_red <= 8'0; // preto
 							r_blue <= 8'0;
 							r_green <= 8'0; 
 							end
-						
 					end
 		end
 	

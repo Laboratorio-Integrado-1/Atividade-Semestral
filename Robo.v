@@ -34,34 +34,88 @@ begin
 
 	else
 	    begin
-            	casez ({head, left, under, barrier})
+            	case ({head, left, under, barrier})
 		// Situacoes Previstas
-                	4'b1??1: EstadoFuturo = StandBy;
+                	4'b0000: 
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                	4'b0??0: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		avancar = 1'b1;
-                	end
+			4'b0001:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                	4'b10?0: 
-			begin
-                    		EstadoFuturo = Rotacionando;
-                    		girar = 1'b1;
-                	end
+			4'b0010:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                	4'b0??1: 
-			begin
-                    		EstadoFuturo = Ret_Entulho;
-                    		recolher_entulho = 1'b1;
-                	end
+			4'b0011:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                	4'b11?0: 
-			begin
-                    		EstadoFuturo = Giros;
-                    		girar = 1'b1;
-                	end
+			4'b0100:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
+			4'b0101:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0110:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0111:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b1000:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1001: EstadoFuturo = StandBy;
+
+			4'b1010:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1011: EstadoFuturo = StandBy;
+
+			4'b1100:
+				begin
+					EstadoFuturo = Giros;
+					girar = 1'b1;
+				end
+
+			4'b1101: EstadoFuturo = StandBy;
+
+			4'b1110:
+				begin
+					EstadoFuturo = Giros;
+					girar = 1'b1;
+				end
+
+			4'b1111: EstadoFuturo = StandBy;
+                	
                 	default: EstadoFuturo = StandBy;
             	endcase
 	    end
@@ -69,35 +123,63 @@ begin
         
         Avancando: 
 	begin
-            casez ({head, left, under, barrier})
+            case ({head, left, under, barrier})
 	    // Situacoes Previstas
-                4'b1??1: EstadoFuturo = StandBy;
+                	4'b0000: 
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
 
-                4'b??1?: EstadoFuturo = StandBy;
+			4'b0001:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                4'b0100: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		avancar = 1'b1;
-                	end
+			4'b0010: EstadoFuturo = StandBy;
 
-                4'b?000: 
-			begin
-                    		EstadoFuturo = Rotacionando;
-                    		girar = 1'b1;
-                	end
+			4'b0011: EstadoFuturo = StandBy;
 
-                4'b0?01: 
-			begin
-                    		EstadoFuturo = Ret_Entulho;	
-				recolher_entulho = 1'b1;
-                	end
+			4'b0100:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                4'b1100: 
-			begin
-                    		EstadoFuturo = Giros;
-                    		girar = 1'b1;
-                	end
+			4'b0101:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0110: EstadoFuturo = StandBy;
+
+			4'b0111: EstadoFuturo = StandBy;
+
+			4'b1000:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1001: EstadoFuturo = StandBy;
+
+			4'b1010: EstadoFuturo = StandBy;
+
+			4'b1011: EstadoFuturo = StandBy;
+
+			4'b1100:
+				begin
+					EstadoFuturo = Giros;
+					girar = 1'b1;
+				end
+
+			4'b1101: EstadoFuturo = StandBy;
+
+			4'b1110: EstadoFuturo = StandBy;
+
+			4'b1111: EstadoFuturo = StandBy;
 
                 default: EstadoFuturo = StandBy;
             endcase
@@ -105,27 +187,87 @@ begin
 
         Rotacionando:
 	 begin
-            casez ({head, left, under, barrier})
+            case ({head, left, under, barrier})
 	    // Situacoes Previstas
-                4'b1??1: EstadoFuturo = StandBy;
+                	4'b0000: 
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                4'b0??0: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		avancar = 1'b1;
-                	end
+			4'b0001:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                4'b1??0: 
-			begin
-                    		EstadoFuturo = Rotacionando;
-                    		girar = 1'b1;
-                	end
+			4'b0010:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                4'b0??1: 
-			begin
-                    		EstadoFuturo = Ret_Entulho;
-                    		recolher_entulho = 1'b1;
-                	end
+			4'b0011:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0100:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0101:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0110:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0111:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b1000:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1001: EstadoFuturo = StandBy;
+
+			4'b1010:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1011: EstadoFuturo = StandBy;
+
+			4'b1100:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1101: EstadoFuturo = StandBy;
+
+			4'b1110:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1111: EstadoFuturo = StandBy;
 
                 default: EstadoFuturo = StandBy;
             endcase
@@ -133,21 +275,71 @@ begin
         
         Ret_Entulho: 
 	begin
-            casez ({head, left, under, barrier})
+            case ({head, left, under, barrier})
 	    // Situacoes Previstas
-                4'b1???: EstadoFuturo = StandBy;
+               		4'b0000: 
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                4'b0??0: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		avancar = 1'b1;
-                	end
+			4'b0001:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                4'b0??1: 
-			begin
-                    		EstadoFuturo = Ret_Entulho;
-                    		recolher_entulho = 1'b1;
-                end
+			4'b0010:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0011:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0100:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0101:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0110:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0111:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b1000: EstadoFuturo = StandBy;
+
+			4'b1001: EstadoFuturo = StandBy;
+
+			4'b1010: EstadoFuturo = StandBy;
+
+			4'b1011: EstadoFuturo = StandBy;
+
+			4'b1100: EstadoFuturo = StandBy;
+
+			4'b1101: EstadoFuturo = StandBy;
+
+			4'b1110: EstadoFuturo = StandBy;
+
+			4'b1111: EstadoFuturo = StandBy;
 
                 default: EstadoFuturo = StandBy;
             endcase
@@ -155,39 +347,87 @@ begin
         
         Giros: 
 	begin
-            casez ({head, left, under, barrier})
+            case ({head, left, under, barrier})
 	    // Situacoes Previstas
-                4'b1??1: EstadoFuturo = StandBy;
+               		4'b0000: 
+				begin
+					EstadoFuturo = Avancando;
+					girar = 1'b1;
+				end
 
-                4'b00?0: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		girar = 1'b1;
-                	end
+			4'b0001:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                4'b01?0: 
-			begin
-                    		EstadoFuturo = Avancando;
-                    		avancar = 1'b1;
-                	end
+			4'b0010:
+				begin
+					EstadoFuturo = Avancando;
+					girar = 1'b1;
+				end
 
-                4'b11?0: 
-			begin
-                    		EstadoFuturo = Rotacionando;
-                    		girar = 1'b1;
-               		end
+			4'b0011:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
 
-                4'b0??1: 
-			begin
-                    		EstadoFuturo = Ret_Entulho;
-                    		recolher_entulho = 1'b1;
-                	end
+			4'b0100:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
 
-                4'b10?0: 
-			begin
-                    		EstadoFuturo = Giros;
-                    		girar = 1'b1;
-                	end
+			4'b0101:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b0110:
+				begin
+					EstadoFuturo = Avancando;
+					avancar = 1'b1;
+				end
+
+			4'b0111:
+				begin
+					EstadoFuturo = Ret_Entulho;
+					recolher_entulho = 1'b1;
+				end
+
+			4'b1000: 
+				begin
+					EstadoFuturo = Giros;
+					girar = 1'b1;
+				end
+
+			4'b1001: EstadoFuturo = StandBy;
+
+			4'b1010: 
+				begin
+					EstadoFuturo = Giros;
+					girar = 1'b1;
+				end
+
+			4'b1011: EstadoFuturo = StandBy;
+
+			4'b1100:
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1101: EstadoFuturo = StandBy;
+
+			4'b1110: 
+				begin
+					EstadoFuturo = Rotacionando;
+					girar = 1'b1;
+				end
+
+			4'b1111: EstadoFuturo = StandBy;
 
                 default: EstadoFuturo = StandBy;
             endcase

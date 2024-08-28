@@ -529,7 +529,7 @@ begin
     // Iterar sobre cada linha do mapa
     for(i = 0; i < 11; i = i + 1) begin
         // Iterar sobre cada coluna da linha
-        for(j = 0; j < 19; j = j + 1) begin
+        for(j = 0; j < 20; j = j + 1) begin
             linha_temp = {linha_temp[75:0], Mapa[i][j]}; // Concatena o valor atual com a linha convertida
         end
 

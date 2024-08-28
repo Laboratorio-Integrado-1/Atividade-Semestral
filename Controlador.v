@@ -11,6 +11,7 @@ output reg head, left, under, barrier;
 output reg [79:0] LinhaSprites1, LinhaSprites2, LinhaSprites3, LinhaSprites4, LinhaSprites5, LinhaSprites6, LinhaSprites7, LinhaSprites8, LinhaSprites9, LinhaSprites10;
 reg [79:0] linha_temp; // Inicializa um registrador temporário para armazenar a linha convertida
 output reg [7:0] LEDG;
+output reg [7:0] LEGR;
 
 reg [3:0] Mapa [0:10][0:19];
 

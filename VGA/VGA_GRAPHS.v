@@ -280,7 +280,7 @@ module VGA_GRAPHS(
                         end
                     end
                     
-                    EstadoFuturo <= PROCESSAR_METADE_2;
+                    EstadoFuturo = PROCESSAR_METADE_2;
                 end
 
                 PROCESSAR_METADE_2: 
@@ -330,7 +330,7 @@ module VGA_GRAPHS(
                         end
                     end
                         
-                        EstadoFuturo <= ATUALIZAR_LINHA;
+                        EstadoFuturo = ATUALIZAR_LINHA;
                 end
             endcase
     end

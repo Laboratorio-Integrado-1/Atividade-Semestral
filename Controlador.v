@@ -1,4 +1,4 @@
-module Contolador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LinhaSprites1, LinhaSprites2, LinhaSprites3, LinhaSprites4, LinhaSprites5, LinhaSprites6, LinhaSprites7, LinhaSprites8, LinhaSprites9, LinhaSprites10);
+module Contolador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, LinhaSprites1, LinhaSprites2, LinhaSprites3, LinhaSprites4, LinhaSprites5, LinhaSprites6, LinhaSprites7, LinhaSprites8, LinhaSprites9, LinhaSprites10);
 
 parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
 
@@ -9,12 +9,13 @@ input avancar, girar, remover;
 output reg head, left, under, barrier;
 
 output reg [79:0] LinhaSprites1, LinhaSprites2, LinhaSprites3, LinhaSprites4, LinhaSprites5, LinhaSprites6, LinhaSprites7, LinhaSprites8, LinhaSprites9, LinhaSprites10;
-reg [79:0] linha_temp; // Inicializa um registrador temporário para armazenar a linha convertida
+reg [79:0] linha_temp; // Inicializa um registrador temporÃ¡rio para armazenar a linha convertida
 output reg [7:0] LEDG;
+output reg [7:0] LEDR;
 
 reg [3:0] Mapa [0:10][0:19];
 
-integer entulho_life; // Vida do entulho, representa quantas iteracoes são necessarias para remove-lo
+integer entulho_life; // Vida do entulho, representa quantas iteracoes sÃ£o necessarias para remove-lo
 
 reg [5:0] ColunaCelulaPreta;
 reg [5:0] ColunaRobo;
@@ -54,19 +55,19 @@ always @(posedge Clock50)
 begin
 	if (reset)
 	begin		
-		// Configuração do mapa 
-        // 0: Caminho Livre -	Celula onde o robô pode se mover livremente.
-        // 1: Parede - Obstaculo que impede o movimento do robô.
-        // 2: Celula Preta - Célula que indica o inicio ou final de uma tubulacao.
+		// ConfiguraÃ§Ã£o do mapa 
+        // 0: Caminho Livre -	Celula onde o robÃ´ pode se mover livremente.
+        // 1: Parede - Obstaculo que impede o movimento do robÃ´.
+        // 2: Celula Preta - CÃ©lula que indica o inicio ou final de uma tubulacao.
         // 3: Entulho Leve - Entulho que requer 3 ciclos para ser removido.
         // 4: Entulho Medio - Entulho que requer 6 ciclos para ser removido.
         // 5: Entulho Pesado - Entulho que requer 9 ciclos para ser removido.
 
         $readmemh("Mapa.txt", temp);
 
-        LinhaRobo = temp[0][79:72]; //  (0º linha, 0-1 caracteres)
-        ColunaRobo = temp[0][71:64]; // (0º linha, 2-3 caracteres)
-        Orientacao_Hex = temp[0][63:60]; // (0º linha, 4º caractere)
+        LinhaRobo = temp[0][79:72]; //  (0Âº linha, 0-1 caracteres)
+        ColunaRobo = temp[0][71:64]; // (0Âº linha, 2-3 caracteres)
+        Orientacao_Hex = temp[0][63:60]; // (0Âº linha, 4Âº caractere)
         
         // Converter o valor hexadecimal da orientacao para a string correspondente
         case (Orientacao_Hex)
@@ -80,7 +81,7 @@ begin
         // Preencher a matriz com os valores restantes
         for (i = 0; i < 10; i = i + 1) begin
             for (j = 0; j < 20; j = j + 1) begin
-                if (temp[i+1][79 - j*4 -: 4] == 2) begin // Identificação da celula preta
+                if (temp[i+1][79 - j*4 -: 4] == 2) begin // IdentificaÃ§Ã£o da celula preta
                     LinhaCelulaPreta = i;
                     ColunaCelulaPreta = j;
                 end
@@ -88,13 +89,14 @@ begin
             end
         end
 		
-		HabilitaNovaLeitura = 1;
-		LEDG <= 8'b00010000;
+	    HabilitaNovaLeitura = 1;
+	    LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
         left <= 0;
         under <= 0;
         barrier <= 0;
-        step_mode <= 0; // Inicializa no modo contínuo
-        btn_step <= 0; // Inicializa no modo contínuo
+        step_mode <= 0; // Inicializa no modo contÃ­nuo
+        btn_step <= 0; // Inicializa no modo contÃ­nuo
         entulho_life <= 0; // Inicializa a vida do entulho como 0
         linha_temp <= 80'b0;
 	end
@@ -114,10 +116,10 @@ begin
         IteracaoRobo <= 0;
         ContadorFramesRobo <= 0;
 
-        // Espera o robô rodar para atualizar a posição
+        // Espera o robÃ´ rodar para atualizar a posiÃ§Ã£o
         @ (negedge Clock50);
 
-        // Verificações do tipo de execução
+        // VerificaÃ§Ãµes do tipo de execuÃ§Ã£o
         if (step_mode && btn_step) begin
             Atualiza_Posicao_Robo;
             btn_step <= 0;
@@ -129,7 +131,7 @@ begin
     end
 
     if (Situacoes_Anomalas(1)) begin
-        $display("Estado Anômalo Detectado. Aguardando reset...");
+        $display("Estado AnÃ´malo Detectado. Aguardando reset...");
         @ (negedge reset);
     end 
 
@@ -179,7 +181,7 @@ begin
     // Entradas[1] = Saida_Down
     // Entradas[0] = Saida_Up 
     
-    // Atualiza posição do robô
+    // Atualiza posiÃ§Ã£o do robÃ´
     if (Entradas[4])
     begin
         if (Mapa[LinhaRobo][ColunaRobo] == 0 || Mapa[LinhaRobo][ColunaRobo] == 2) begin
@@ -188,7 +190,7 @@ begin
         end
     end
 
-    // Atualiza posição do cursor (Saida_Up)
+    // Atualiza posiÃ§Ã£o do cursor (Saida_Up)
     if (Entradas[0])
     begin
         if (LinhaCursor == 1)
@@ -199,9 +201,19 @@ begin
         begin
             LinhaCursor <= LinhaCursor - 1;
         end
+
+        // Desloca LED Vermelho p/ Esquerda
+        if (LEDR == 8'b10000000 || LEDR == 8'b00000000)
+        begin
+            LEDR <= 8'b00000001;
+        end
+        else 
+        begin
+            LEDR <= LEDR << 1;
+        end
     end
     
-    // Atualiza posição do cursor (Saida_Down)
+    // Atualiza posiÃ§Ã£o do cursor (Saida_Down)
     if (Entradas[1])
     begin
         if (LinhaCursor == 5)
@@ -212,9 +224,19 @@ begin
         begin
             LinhaCursor <= LinhaCursor + 1;
         end
+
+        // Desloca LED Vermelho p/ Direita
+        if (LEDR == 8'b10000000 || LEDR == 8'b00000000)
+        begin
+            LEDR <= 8'b10000000;
+        end
+        else 
+        begin
+            LEDR <= LEDR >> 1;
+        end
     end
     
-    // Atualiza posição do cursor (Saida_Left)
+    // Atualiza posiÃ§Ã£o do cursor (Saida_Left)
     if (Entradas[2])
     begin
         if (ColunaCursor == 1)
@@ -225,6 +247,8 @@ begin
         begin
             ColunaCursor <= ColunaCursor - 1;
         end
+        
+        // Desloca LED Verde p/ Esquerda
         if (LEDG == 8'b10000000 || LEDG == 8'b00000000)
         begin
             LEDG <= 8'b00000001;
@@ -235,7 +259,7 @@ begin
         end
     end
     
-    // Atualiza posição do cursor (Saida_Right)
+    // Atualiza posiÃ§Ã£o do cursor (Saida_Right)
     if (Entradas[3])
     begin
         if (ColunaCursor == 10)
@@ -246,6 +270,8 @@ begin
         begin
             ColunaCursor <= ColunaCursor + 1;
         end
+
+        // Desloca LED Verde p/ Direita
         if (LEDG == 8'b00000001 || LEDG == 8'b00000000)
         begin
             LEDG <= 8'b10000000;
@@ -256,13 +282,23 @@ begin
         end
     end		
 
-    // Atualiza posição da celula preta 
+    // Atualiza posiÃ§Ã£o da celula preta 
     if (Entradas[5])
     begin
         if (Mapa[LinhaCursor][ColunaCursor] == 0) begin
             Mapa[LinhaCursor][ColunaCursor] <= 1;
             Mapa[LinhaCelulaPreta][ColunaCelulaPreta] <= 0;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b01110111;
+        LEDR <= 8'b01110111;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
     // Remove entulho
@@ -271,6 +307,16 @@ begin
         if (Mapa[LinhaCursor][ColunaCursor] > 2) begin
             Mapa[LinhaCursor][ColunaCursor] <= 0;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b10111011;
+        LEDR <= 8'b10111011;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
     // Adiciona entulho leve
@@ -279,6 +325,16 @@ begin
         if (Mapa[LinhaCursor][ColunaCursor] == 0 || Mapa[LinhaCursor][ColunaCursor] > 2) begin
             Mapa[LinhaCursor][ColunaCursor] <= 3;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b11011101;
+        LEDR <= 8'b11011101;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
     // Adiciona entulho medio
@@ -287,6 +343,16 @@ begin
         if (Mapa[LinhaCursor][ColunaCursor] == 0 || Mapa[LinhaCursor][ColunaCursor] > 2) begin
             Mapa[LinhaCursor][ColunaCursor] <= 4;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b11101110;
+        LEDR <= 8'b11101110;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
     // Adiciona entulho pesado
@@ -295,6 +361,16 @@ begin
         if (Mapa[LinhaCursor][ColunaCursor] == 0 || Mapa[LinhaCursor][ColunaCursor] > 2) begin
             Mapa[LinhaCursor][ColunaCursor] <= 5;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b10010001;
+        LEDR <= 8'b10010001;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
     // Atualiza passo, para modo de passo-a-passo
@@ -303,12 +379,32 @@ begin
         if (step_mode) begin
             btn_step <= 1;
         end
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b01100110;
+        LEDR <= 8'b01100110;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 
-    // Atualiza modo de execução
+    // Atualiza modo de execuÃ§Ã£o
     if (Entradas[11])
     begin
         step_mode <= ~step_mode;
+
+        // Acende LEDs Verde e Vermelho
+        LEDG <= 8'b11100111;
+        LEDR <= 8'b11100111;
+    end
+    else
+    begin
+        // Apaga as LEDs Verde e Vermelho, exceto [4]
+        LEDG <= 8'b00010000;
+        LEDR <= 8'b00010000;
     end
 end
 endtask
@@ -332,7 +428,7 @@ begin
                 // Definicao de under
                 under = (Mapa[LinhaRobo][ColunaRobo] == 2) ? 1 : 0;
 
-                // Definição de barrier
+                // DefiniÃ§Ã£o de barrier
                 if (LinhaRobo == 0) // Situacao de borda do mapa
                     barrier = 0;
                 else if (Mapa[LinhaRobo - 1][ColunaRobo] >= 3) begin
@@ -533,7 +629,7 @@ begin
             linha_temp = {linha_temp[75:0], Mapa[i][j]}; // Concatena o valor atual com a linha convertida
         end
 
-        // Armazena a linha convertida no registrador de saída correspondente
+        // Armazena a linha convertida no registrador de saÃ­da correspondente
         case(i)
             0: LinhaSprites1 = linha_temp;
             1: LinhaSprites2 = linha_temp;

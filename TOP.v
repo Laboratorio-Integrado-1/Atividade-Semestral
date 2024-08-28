@@ -1,0 +1,135 @@
+module TOP(
+	CLOCK_50,
+	CLOCK_25,
+	Pino1,
+	Pino2,
+	Pino3,
+	Pino4,
+	Pino6,
+	Pino9,
+	SW,
+	VGA_VS,
+	VGA_HS,
+	VGA_BLANK_N,
+	VGA_CLK,
+	Select,
+	ColunasSprites,
+	LEDG,
+	LEDR,
+	LinhasSprites,
+	VGA_B,
+	VGA_G,
+	VGA_R
+);
+
+
+input wire	CLOCK_50;
+input wire	CLOCK_25;
+input wire	Pino1;
+input wire	Pino2;
+input wire	Pino3;
+input wire	Pino4;
+input wire	Pino6;
+input wire	Pino9;
+input wire	[17:17] SW;
+output wire	VGA_VS;
+output wire	VGA_HS;
+output wire	VGA_BLANK_N;
+output wire	VGA_CLK;
+output wire	Select;
+output wire	[23:0] ColunasSprites;
+output wire	[7:0] LEDG;
+output wire	[11:0] LEDR;
+output wire	[17:0] LinhasSprites;
+output wire	[7:0] VGA_B;
+output wire	[7:0] VGA_G;
+output wire	[7:0] VGA_R;
+
+wire	[9:0] SYNTHESIZED_WIRE_2;
+wire	[23:0] SYNTHESIZED_WIRE_3;
+wire	[9:0] SYNTHESIZED_WIRE_4;
+wire	[17:0] SYNTHESIZED_WIRE_5;
+wire	[23:0] SYNTHESIZED_WIRE_7;
+wire	SYNTHESIZED_WIRE_15;
+wire	[11:0] SYNTHESIZED_WIRE_10;
+wire	SYNTHESIZED_WIRE_11;
+wire	SYNTHESIZED_WIRE_12;
+wire	SYNTHESIZED_WIRE_13;
+wire	SYNTHESIZED_WIRE_14;
+wire	SYNTHESIZED_WIRE_16;
+wire	SYNTHESIZED_WIRE_17;
+wire	SYNTHESIZED_WIRE_18;
+
+assign	VGA_VS = SYNTHESIZED_WIRE_15;
+assign	VGA_CLK = CLOCK_25;
+assign	ColunasSprites = SYNTHESIZED_WIRE_3;
+assign	LEDR = SYNTHESIZED_WIRE_10;
+assign	LinhasSprites = SYNTHESIZED_WIRE_5;
+assign	Head = SYNTHESIZED_WIRE_11;
+assign	Left = SYNTHESIZED_WIRE_12;
+assign	Under = SYNTHESIZED_WIRE_13;
+assign	Barrier = SYNTHESIZED_WIRE_14;
+assign	Avancar = SYNTHESIZED_WIRE_16;
+assign	Girar = SYNTHESIZED_WIRE_17;
+assign	Recolher_Entulho = SYNTHESIZED_WIRE_18;
+
+VGA_GRAPHS	b2v_inst(
+	.reset(SW),
+    .clock_50(CLOCK_50),
+    .clock_25(CLOCK_25),
+    .Linha(SYNTHESIZED_WIRE_4),
+	.Coluna(SYNTHESIZED_WIRE_2),
+    .RGB(SYNTHESIZED_WIRE_7));
+
+
+Interface_VGA	b2v_inst1(
+	.Clock(CLOCK_25),
+	.Reset(SW),
+	.RGB(SYNTHESIZED_WIRE_7),
+	.v_sync(SYNTHESIZED_WIRE_15),
+	.h_sync(VGA_HS),
+	.blank(VGA_BLANK_N),
+	.B(VGA_B),
+	.ColunaOut(SYNTHESIZED_WIRE_2),
+	.G(VGA_G),
+	.LinhaOut(SYNTHESIZED_WIRE_4),
+	.R(VGA_R));
+
+
+Controlador	b2v_inst4(
+	.Clock50(CLOCK_50),
+	.Reset(SW),
+	.v_sync(SYNTHESIZED_WIRE_15),
+	.Entradas(SYNTHESIZED_WIRE_10),
+	.ColunasSprites(SYNTHESIZED_WIRE_3),
+	.LEDG(LEDG),
+	.LEDR(LEDR),
+	.LinhasSprites(SYNTHESIZED_WIRE_5));
+
+
+Controle	b2v_inst7(
+	.Clock50(CLOCK_50),
+	.Reset(SW),
+	.Pino1(Pino1),
+	.Pino2(Pino2),
+	.Pino3(Pino3),
+	.Pino4(Pino4),
+	.Pino6(Pino6),
+	.Pino9(Pino9),
+	.v_sync(SYNTHESIZED_WIRE_15),
+	.Select(Select),
+	.Saidas(SYNTHESIZED_WIRE_10));
+
+
+Robo 	b2v_inst8(
+	.clock(CLOCK_50), 
+	.reset(SW), 
+	.head(Head), 
+	.left(Left), 
+	.under(Under), 
+	.barrier(Barrier), 
+	.avancar(Avancar), 
+	.girar(Girar), 
+	.recolher_entulho(Recolher_Entulho));
+
+endmodule

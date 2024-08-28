@@ -21,10 +21,10 @@ module VGA_GRAPHS(
     integer i,j;
     integer contadorLinha;
 
-    parameter 	LINHA_MAPA_1 = 235,
- 				LINHA_INFERIOR = 715,
-				COLUNA_MAPA_1 = 364,
-				COLUNA_DIREITA = 700;
+    parameter 	LINHA_MAPA_1 = 160,
+ 				LINHA_INFERIOR = 480,
+				COLUNA_MAPA_1 = 0,
+				COLUNA_DIREITA = 640;
 
     parameter   CODIGO_TRANSPARENTE = 3'b000,
                 CODIGO_AZUL = 3'b001,                        
@@ -206,133 +206,24 @@ module VGA_GRAPHS(
     end
 
 
-    always @(*)
-    begin
-        case (EstadoFuturo)
-                IDLE:
-                begin
-                    if (Linha == LINHA_MAPA_1)
-                    begin					
-                        EstadoFuturo = ATUALIZAR_LINHA;				
-                    end
-                    else
-                    begin
-                        EstadoFuturo = IDLE;
-                    end 
-                end
-                ATUALIZAR_LINHA:
-                begin
-                    if (Linha > LINHA_INFERIOR)
-                    begin
-                        EstadoFuturo = IDLE;
-                    end
-                    else
-                    begin
-                        EstadoFuturo = PROCESSAR_METADE_1;
-			        end
-                end
-
-
-                PROCESSAR_METADE_1: 
-                begin
-                    // Processar a primeira metade da linha (pixels 0 a 9)
-                    for (i = 0; i < 10; i = i + 1)
-                    begin
-                        // Sprite Robo
-                        if (LinhaAtual[i] == 3'h0)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Cursor
-                        else if (LinhaAtual[i] == 3'h1)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 1
-                        else if (LinhaAtual[i] == 3'h2)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 2
-                        else if (LinhaAtual[i] == 3'h3)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 3
-                        else if (LinhaAtual[i] == 3'h4)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Sem Cano
-                        else if (LinhaAtual[i] == 3'h5)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Cano
-                        else if (LinhaAtual[i] == 3'h6)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Célula Preta
-                        else if (LinhaAtual[i] == 3'h7)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                    end
-                    
-                    EstadoFuturo = PROCESSAR_METADE_2;
-                end
-
-                PROCESSAR_METADE_2: 
-                begin
-                    // Processar a segunda metade da linha (pixels 10 a 19)
-                    for (i = 10; i < 20; i = i + 1)
-                    begin
-                        // Sprite Robo
-                        if (LinhaAtual[i] == 3'h0)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Cursor
-                        else if (LinhaAtual[i] == 3'h1)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 1
-                        else if (LinhaAtual[i] == 3'h2)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 2
-                        else if (LinhaAtual[i] == 3'h3)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Lixo 3
-                        else if (LinhaAtual[i] == 3'h4)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Sem Cano
-                        else if (LinhaAtual[i] == 3'h5)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Cano
-                        else if (LinhaAtual[i] == 3'h6)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                        // Sprite Célula Preta
-                        else if (LinhaAtual[i] == 3'h7)
-                        begin
-                            VetorPixels[i] = Sprites[i * 16 + DeslocamentoLinha];
-                        end
-                    end
-                        
-                        EstadoFuturo = ATUALIZAR_LINHA;
-                end
-            endcase
+    always @ (*) begin
+        if (Linha < LINHA_MAPA_1 || Linha > LINHA_INFERIOR || Coluna < (COLUNA_MAPA_1 + 16) || Coluna > COLUNA_DIREITA)
+        begin
+            ZonaAtiva = 0;
+            RGB = COR_PRETO;		
+        end else begin
+            // Corrigido para não redefinir os parâmetros
+            case (VetorPixels[IndicePixel])            
+                CODIGO_AZUL:        RGB = COR_AZUL;
+                CODIGO_BRANCO:      RGB = COR_BRANCO;
+                CODIGO_CIANO:       RGB = COR_CIANO;
+                CODIGO_LARANJA:     RGB = COR_LARANJA;
+                CODIGO_PRETO:       RGB = COR_PRETO;
+                CODIGO_VERDE:       RGB = COR_VERDE;
+                CODIGO_VERMELHO:    RGB = COR_VERMELHO;            
+                default:            RGB = COR_PRETO; 
+            endcase        
+        end
     end
 
     // Bloco always para gerenciamento de estados e construção do vetor de pixels
@@ -340,8 +231,8 @@ module VGA_GRAPHS(
     begin
         if(reset) 
         begin
-            contadorLinha = 0;
-            EstadoFuturo = IDLE;
+            contadorLinha <= 0;
+            EstadoAtual <= IDLE;
             DeslocamentoLinha <= 0;
         end 
         else 
@@ -389,24 +280,134 @@ module VGA_GRAPHS(
         end
     end
 
-    always @ (*) begin
-        if (Linha < LINHA_MAPA_1 || Linha > LINHA_INFERIOR || Coluna < (COLUNA_MAPA_1 + 16) || Coluna > COLUNA_DIREITA)
-        begin
-            ZonaAtiva = 0;
-            RGB = COR_PRETO;		
-        end else begin
-            // Corrigido para não redefinir os parâmetros
-            case (VetorPixels[IndicePixel])            
-                CODIGO_AZUL:        RGB = COR_AZUL;
-                CODIGO_BRANCO:      RGB = COR_BRANCO;
-                CODIGO_CIANO:       RGB = COR_CIANO;
-                CODIGO_LARANJA:     RGB = COR_LARANJA;
-                CODIGO_PRETO:       RGB = COR_PRETO;
-                CODIGO_VERDE:       RGB = COR_VERDE;
-                CODIGO_VERMELHO:    RGB = COR_VERMELHO;            
-                default:            RGB = COR_PRETO; 
-            endcase        
-        end
+    always @(*)
+    begin
+        case (EstadoFuturo)
+            IDLE:
+            begin
+                if (Linha == LINHA_MAPA_1)
+                begin					
+                    EstadoFuturo = ATUALIZAR_LINHA;				
+                end
+                else
+                begin
+                    EstadoFuturo = IDLE;
+                end 
+            end
+            ATUALIZAR_LINHA:
+            begin
+                if (Linha > LINHA_INFERIOR)
+                begin
+                    EstadoFuturo = IDLE;
+                end
+                else
+                begin
+                    EstadoFuturo = PROCESSAR_METADE_1;
+                end
+            end
+
+
+            PROCESSAR_METADE_1: 
+            begin
+                // Processar a primeira metade da linha (pixels 0 a 9)
+                for (i = 0; i < 10; i = i + 1)
+                begin
+                    // Sprite Robo
+                    if (LinhaAtual[i] == 3'h0)
+                    begin
+                        VetorPixels[i] = Sprites[0 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Cursor
+                    else if (LinhaAtual[i] == 3'h1)
+                    begin
+                        VetorPixels[i] = Sprites[1 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 1
+                    else if (LinhaAtual[i] == 3'h2)
+                    begin
+                        VetorPixels[i] = Sprites[2 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 2
+                    else if (LinhaAtual[i] == 3'h3)
+                    begin
+                        VetorPixels[i] = Sprites[3 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 3
+                    else if (LinhaAtual[i] == 3'h4)
+                    begin
+                        VetorPixels[i] = Sprites[4 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Sem Cano
+                    else if (LinhaAtual[i] == 3'h5)
+                    begin
+                        VetorPixels[i] = Sprites[5 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Cano
+                    else if (LinhaAtual[i] == 3'h6)
+                    begin
+                        VetorPixels[i] = Sprites[6 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Célula Preta
+                    else if (LinhaAtual[i] == 3'h7)
+                    begin
+                        VetorPixels[i] = Sprites[7 * 16 + DeslocamentoLinha];
+                    end
+                end
+                
+                EstadoFuturo = PROCESSAR_METADE_2;
+            end
+
+            PROCESSAR_METADE_2: 
+            begin
+                // Processar a segunda metade da linha (pixels 10 a 19)
+                for (i = 10; i < 20; i = i + 1)
+                begin
+                    // Sprite Robo
+                    if (LinhaAtual[i] == 3'h0)
+                    begin
+                        VetorPixels[i] = Sprites[0 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Cursor
+                    else if (LinhaAtual[i] == 3'h1)
+                    begin
+                        VetorPixels[i] = Sprites[1 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 1
+                    else if (LinhaAtual[i] == 3'h2)
+                    begin
+                        VetorPixels[i] = Sprites[2 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 2
+                    else if (LinhaAtual[i] == 3'h3)
+                    begin
+                        VetorPixels[i] = Sprites[3 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Lixo 3
+                    else if (LinhaAtual[i] == 3'h4)
+                    begin
+                        VetorPixels[i] = Sprites[4 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Sem Cano
+                    else if (LinhaAtual[i] == 3'h5)
+                    begin
+                        VetorPixels[i] = Sprites[5 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Cano
+                    else if (LinhaAtual[i] == 3'h6)
+                    begin
+                        VetorPixels[i] = Sprites[6 * 16 + DeslocamentoLinha];
+                    end
+                    // Sprite Célula Preta
+                    else if (LinhaAtual[i] == 3'h7)
+                    begin
+                        VetorPixels[i] = Sprites[7 * 16 + DeslocamentoLinha];
+                    end
+                end
+                    
+                    EstadoFuturo = ATUALIZAR_LINHA;
+            end
+            default: EstadoFuturo = IDLE;
+            endcase
     end
 
 endmodule

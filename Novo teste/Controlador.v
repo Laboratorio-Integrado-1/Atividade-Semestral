@@ -128,24 +128,24 @@ begin
         */		
 
         // Inicializacao dos valores
-        LinhaRobo <= 5'h03;
+        LinhaRobo <= 4'h03;
         ColunaRobo <= 5'h12;
-        LinhaCelulaPreta <= 5'h03;
+        LinhaCelulaPreta <= 4'h03;
         ColunaCelulaPreta <= 5'h12;
         Orientacao_Robo <= L;
 
         LinhaEntulhoLeve <= 4'h14;
-        ColunaEntulhoLeve <= 4'h14;
+        ColunaEntulhoLeve <= 5'h14;
         LinhaEntulhoMedio <= 4'h5;
-        ColunaEntulhoMedio <= 4'h0F;
+        ColunaEntulhoMedio <= 5'h0F;
         LinhaEntulhoPesado <= 4'h03;
-        ColunaEntulhoPesado <= 4'h11;
+        ColunaEntulhoPesado <= 5'h11;
 
         ColunaCursor <= 5'h0A;
-        LinhaCursor <= 4'h05;
+        LinhaCursor <= 4'h03;
 
 	    HabilitaNovaLeitura <= 1;
-        IteracaoRobo <= 0;
+        IteracaoRobo <= 1;
 
 	    LEDG <= 8'b00010000;
         LEDR <= 8'b00010000;
@@ -769,8 +769,21 @@ always @(negedge Clock50)
 begin
     if (!reset)
     begin
-        ColunasSprites <= {ColunaCelulaPreta - 1, ColunaEntulhoLeve - 1, ColunaEntulhoMedio - 1, ColunaEntulhoPesado - 1, ColunaRobo - 1, ColunaCursor - 1};
-        LinhasSprites <= {LinhaCelulaPreta - 1, LinhaEntulhoLeve - 1, LinhaEntulhoMedio - 1, LinhaEntulhoPesado - 1, LinhaRobo - 1, LinhaCursor - 1};
+         // Atribuição individual de cada campo de ColunasSprites
+        ColunasSprites[29:25] <= ColunaCelulaPreta + 5'b00001;
+        ColunasSprites[24:20] <= ColunaEntulhoLeve + 5'b00001;
+        ColunasSprites[19:15] <= ColunaEntulhoMedio + 5'b00001;
+        ColunasSprites[14:10] <= ColunaEntulhoPesado + 5'b00001;
+        ColunasSprites[9:5]   <= ColunaRobo + 5'b00001;
+        ColunasSprites[4:0]   <= ColunaCursor + 5'b00001;
+
+        // Atribuição individual de cada campo de LinhasSprites
+        LinhasSprites[23:20] <= LinhaCelulaPreta + 4'b0001;
+        LinhasSprites[19:16] <= LinhaEntulhoLeve + 4'b0001;
+        LinhasSprites[15:12] <= LinhaEntulhoMedio + 4'b0001;
+        LinhasSprites[11:8]  <= LinhaEntulhoPesado + 4'b0001;
+        LinhasSprites[7:4]   <= LinhaRobo + 4'b0001;
+        LinhasSprites[3:0]   <= LinhaCursor + 4'b0001;
         OrientacaoRobo <= Orientacao_Robo;
     end
 end

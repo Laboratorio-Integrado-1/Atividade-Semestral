@@ -1,7 +1,7 @@
 module Grafico (Clock50, Clock25, Reset, ColunasSprites, LinhasSprites, Coluna, Linha, RGB);
 
 input Clock50, Clock25, Reset;
-input [23:0] ColunasSprites;
+input [29:0] ColunasSprites;
 input [9:0] Linha, Coluna;
 input [23:0] LinhasSprites;
 output reg [23:0] RGB;
@@ -57,7 +57,7 @@ parameter 	LINHA_MAPA_1 = 235,
 				COLUNA_MAPA_18 = 620,
 				COLUNA_MAPA_19 = 636,
 				COLUNA_MAPA_20 = 652,
-				COLUNA_DIREITA = 684;
+				COLUNA_DIREITA = 668;
 				
 parameter	CODIGO_TRANSPARENTE = 3'b000,
 				CODIGO_AZUL = 3'b001,						
@@ -84,21 +84,20 @@ reg ZonaAtiva;
 
 reg [4:0] IndicePixel, ColunaMapa, LinhaMapa, DeslocamentoLinha;
 
-
 // Background
 wire [1:60] FileiraMapa [1:10]; 
 reg [1:60] FileiraMapaTemp;
 
-assign FileiraMapa[1] = 60'b101_101_101_101_101_110_110_110_110_110_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[2] = 60'b110_110_110_110_110_110_101_101_101_110_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[3] = 60'b110_101_101_101_101_110_110_110_101_101_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[4] = 60'b110_101_101_101_101_101_101_110_101_101_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[5] = 60'b110_101_101_101_101_110_110_110_110_110_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[6] = 60'b101_101_101_101_101_110_110_110_110_110_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[7] = 60'b110_110_110_110_110_110_101_101_101_110_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[8] = 60'b110_101_101_101_101_110_110_110_101_101_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[9] = 60'b110_101_101_101_101_101_101_110_101_101_101_101_101_101_101_110_110_110_110_110;
-assign FileiraMapa[10] = 60'b110_101_101_101_101_110_110_110_110_110_101_101_101_101_101_110_110_110_110_110;
+assign FileiraMapa[1] = 60'b101_101_101_101_101_101_101_101_101_101_101_101_101_101_101_101_101_101_101_101;
+assign FileiraMapa[2] = 60'b101_110_110_110_101_110_110_110_110_110_110_110_110_110_110_110_101_101_101_101;
+assign FileiraMapa[3] = 60'b101_110_101_110_101_110_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[4] = 60'b101_110_101_110_101_110_101_110_110_110_110_110_110_110_110_110_110_110_110_101;
+assign FileiraMapa[5] = 60'b101_110_101_110_101_110_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[6] = 60'b101_110_101_110_110_110_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[7] = 60'b101_110_101_110_101_101_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[8] = 60'b101_110_101_110_101_101_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[9] = 60'b101_110_101_110_101_101_101_110_101_101_101_101_101_101_101_110_101_101_101_101;
+assign FileiraMapa[10] = 60'b101_110_110_110_110_110_110_110_110_110_110_110_110_110_110_110_101_101_101_101;
 
 
 // Fusao Final
@@ -107,12 +106,12 @@ reg [47:0] FileiraPixelsTemp;
 
 
 // Posicao de Sprites
-wire [3:0] ColunaCelulaPreta;
-wire [3:0] ColunaLixo1;
-wire [3:0] ColunaLixo2;
-wire [3:0] ColunaLixo3;
-wire [3:0] ColunaRobo;
-wire [3:0] ColunaCursor;
+wire [4:0] ColunaCelulaPreta;
+wire [4:0] ColunaLixo1;
+wire [4:0] ColunaLixo2;
+wire [4:0] ColunaLixo3;
+wire [4:0] ColunaRobo;
+wire [4:0] ColunaCursor;
 
 wire [3:0] LinhaCelulaPreta;
 wire [3:0] LinhaLixo1;
@@ -121,12 +120,12 @@ wire [3:0] LinhaLixo3;
 wire [3:0] LinhaRobo;
 wire [3:0] LinhaCursor;
 
-assign ColunaCelulaPreta = ColunasSprites[23:20];
-assign ColunaLixo1 = ColunasSprites[19:16];
-assign ColunaLixo2 = ColunasSprites[15:12];
-assign ColunaLixo3 = ColunasSprites[11:8];
-assign ColunaRobo = ColunasSprites[7:4];
-assign ColunaCursor = ColunasSprites[3:0];
+assign ColunaCelulaPreta = ColunasSprites[29:25];
+assign ColunaLixo1 = ColunasSprites[24:20];
+assign ColunaLixo2 = ColunasSprites[19:15];
+assign ColunaLixo3 = ColunasSprites[14:10];
+assign ColunaRobo = ColunasSprites[9:5];
+assign ColunaCursor = ColunasSprites[4:0];
 
 assign LinhaCelulaPreta = LinhasSprites[23:20];
 assign LinhaLixo1 = LinhasSprites[19:16];
@@ -353,25 +352,29 @@ begin
 				begin
 					FileiraMapaTemp <= FileiraMapa[4];
 				end
-				LINHA_MAPA_6 - 1: 
+				LINHA_MAPA_5 - 1: 
 				begin
 					FileiraMapaTemp <= FileiraMapa[5];
 				end
-				LINHA_MAPA_7 - 1: 
+				LINHA_MAPA_6 - 1: 
 				begin
 					FileiraMapaTemp <= FileiraMapa[6];
 				end
-				LINHA_MAPA_8 - 1: 
+				LINHA_MAPA_7 - 1: 
 				begin
 					FileiraMapaTemp <= FileiraMapa[7];
 				end
-				LINHA_MAPA_9 - 1: 
+				LINHA_MAPA_8 - 1: 
 				begin
 					FileiraMapaTemp <= FileiraMapa[8];
 				end
-				LINHA_MAPA_10 - 1: 
+				LINHA_MAPA_9 - 1: 
 				begin
 					FileiraMapaTemp <= FileiraMapa[9];
+				end
+				LINHA_MAPA_10 - 1: 
+				begin
+					FileiraMapaTemp <= FileiraMapa[10];
 				end
 		endcase
 	end
@@ -831,7 +834,7 @@ begin
 	begin
 		LinhaMapa = 4;
 	end
-	if (Linha >= LINHA_MAPA_5 && Linha < LINHA_MAPA_6)
+	else if (Linha >= LINHA_MAPA_5 && Linha < LINHA_MAPA_6)
 	begin
 		LinhaMapa = 5;
 	end
@@ -847,7 +850,7 @@ begin
 	begin
 		LinhaMapa = 8;
 	end
-	else if (Linha >= LINHA_MAPA_9 && Linha <= LINHA_MAPA_10)
+	else if (Linha >= LINHA_MAPA_9 && Linha < LINHA_MAPA_10)
 	begin
 		LinhaMapa = 9;
 	end

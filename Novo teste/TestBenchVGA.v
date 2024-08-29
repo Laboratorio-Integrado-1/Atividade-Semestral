@@ -21,22 +21,8 @@ wire	SYNTHESIZED_WIRE_15;
 wire	[11:0] SYNTHESIZED_WIRE_10;
 assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
-reg [23:0] ColunasSprites;
+reg [29:0] ColunasSprites;
 reg [23:0] LinhasSprites;
-// Posicao de Sprites
-reg [3:0] ColunaCelulaPreta;
-reg [3:0] ColunaLixo1;
-reg [3:0] ColunaLixo2;
-reg [3:0] ColunaLixo3;
-reg [3:0] ColunaRobo;
-reg [3:0] ColunaCursor;
-
-reg [3:0] LinhaCelulaPreta;
-reg [3:0] LinhaLixo1;
-reg [3:0] LinhaLixo2;
-reg [3:0] LinhaLixo3;
-reg [3:0] LinhaRobo;
-reg [3:0] LinhaCursor;
 
 Grafico b2v_inst(
     .Clock50(CLOCK_50),
@@ -77,24 +63,14 @@ end
 
 initial
 begin
-	ColunaCelulaPreta = 1;
-	ColunaLixo1 = 6;
-	ColunaLixo2 = 10;
-	ColunaLixo3 = 1;
-	ColunaRobo = 1;
-	ColunaCursor = 6;
-	LinhaCelulaPreta = 5;		
-	LinhaLixo1 = 3;		
-	LinhaLixo2 = 5;		
-	LinhaLixo3 = 2;		
-	LinhaRobo = 6;		
-	LinhaCursor = 3;
 	CLOCK_50 = 0;
 	CLOCK_25 = 0;
 	//ColunasSprites = {ColunaCelulaPreta, ColunaLixo1, ColunaLixo2, ColunaLixo3, ColunaRobo, ColunaCursor};
 	//LinhasSprites = {LinhaCelulaPreta, LinhaLixo1, LinhaLixo2, LinhaLixo3, LinhaRobo, LinhaCursor};
-	ColunasSprites = 23'h56789A;
-	LinhasSprites = 23'h56789A;
+	ColunasSprites = 30'b10011_00100_10000_10010_10011_10000;
+	LinhasSprites = 24'b0100_0101_0110_0100_0100_0100;
+	//ColunasSprites = 30'b00010_00100_10000_10010_00010_10000;
+	//LinhasSprites = 24'b0010_0101_0110_0100_0010_0100;
 	SW = 1;
 	#105 SW = 0;	
 	Arquivo = $fopen("VGA.bmp", "w");

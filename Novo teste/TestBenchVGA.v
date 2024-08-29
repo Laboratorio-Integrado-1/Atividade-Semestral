@@ -21,14 +21,20 @@ wire	SYNTHESIZED_WIRE_15;
 wire	[11:0] SYNTHESIZED_WIRE_10;
 assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
+reg [29:0] ColunasSprites;
+reg [23:0] LinhasSprites;
+reg [1:0] OrientacaoRobo;
 
-VGA_GRAPHS b2v_inst(
-    .reset(SW),
-    .clock_50(CLOCK_50),
-    .clock_25(CLOCK_25),
+Grafico b2v_inst(
+    .Clock50(CLOCK_50),
+    .Clock25(CLOCK_25),
+	.Reset(SW),
+	.ColunasSprites(ColunasSprites),
+	.LinhasSprites(LinhasSprites),
     .Linha(SYNTHESIZED_WIRE_4),
 	.Coluna(SYNTHESIZED_WIRE_2),
-    .RGB(SYNTHESIZED_WIRE_7)
+    .RGB(SYNTHESIZED_WIRE_7),
+	.OrientacaoRobo(OrientacaoRobo)
 );
 
 Interface_VGA	b2v_inst1(
@@ -61,6 +67,13 @@ initial
 begin
 	CLOCK_50 = 0;
 	CLOCK_25 = 0;
+	//ColunasSprites = {ColunaCelulaPreta, ColunaLixo1, ColunaLixo2, ColunaLixo3, ColunaRobo, ColunaCursor};
+	//LinhasSprites = {LinhaCelulaPreta, LinhaLixo1, LinhaLixo2, LinhaLixo3, LinhaRobo, LinhaCursor};
+	ColunasSprites = 30'b10011_00100_10000_10010_10011_10000;
+	LinhasSprites = 24'b0100_0101_0110_0100_0100_0100;
+	OrientacaoRobo = 2'b10;
+	//ColunasSprites = 30'b00010_00100_10000_10010_00010_10000;
+	//LinhasSprites = 24'b0010_0101_0110_0100_0010_0100;
 	SW = 1;
 	#105 SW = 0;	
 	Arquivo = $fopen("VGA.bmp", "w");

@@ -1,48 +1,49 @@
 `timescale 1ns/1ns;
 
-module TestBenchVGA;
+module TestBench;
 
 reg	CLOCK_50;
 reg	CLOCK_25;
+reg	Pino1;
+reg	Pino2;
+reg	Pino3;
+reg	Pino4;
+reg	Pino6;
+reg	Pino9;
 reg	[17:17] SW;
 wire VGA_VS;
 wire VGA_HS;
 wire VGA_BLANK_N;
 wire VGA_CLK;
+wire Select;
+wire [7:0] LEDG;
+wire [11:0] LEDR;
 wire [7:0] VGA_B;
 wire [7:0] VGA_G;
 wire [7:0] VGA_R;
-wire	[9:0] SYNTHESIZED_WIRE_2;
-wire	[23:0] SYNTHESIZED_WIRE_3;
-wire	[9:0] SYNTHESIZED_WIRE_4;
-wire	[17:0] SYNTHESIZED_WIRE_5;
-wire	[23:0] SYNTHESIZED_WIRE_7;
-wire	SYNTHESIZED_WIRE_15;
-wire	[11:0] SYNTHESIZED_WIRE_10;
-assign	VGA_VS = SYNTHESIZED_WIRE_15;
-assign	VGA_CLK = CLOCK_25;
 
-VGA_GRAPHS b2v_inst(
-    .reset(SW),
-    .clock_50(CLOCK_50),
-    .clock_25(CLOCK_25),
-    .Linha(SYNTHESIZED_WIRE_4),
-	.Coluna(SYNTHESIZED_WIRE_2),
-    .RGB(SYNTHESIZED_WIRE_7)
+TOP DUV (
+	CLOCK_50,
+	CLOCK_25,
+	Pino1,
+	Pino2,
+	Pino3,
+	Pino4,
+	Pino6,
+	Pino9,
+	SW,
+	VGA_VS,
+	VGA_HS,
+	VGA_BLANK_N,
+	VGA_CLK,
+	Select,
+	LEDG,
+	LEDR,
+	VGA_B,
+	VGA_G,
+	VGA_R
 );
 
-Interface_VGA	b2v_inst1(
-	.Clock(CLOCK_25),
-	.Reset(SW),
-	.RGB(SYNTHESIZED_WIRE_7),
-	.v_sync(SYNTHESIZED_WIRE_15),
-	.h_sync(VGA_HS),
-	.blank(VGA_BLANK_N),
-	.B(VGA_B),
-	.ColunaOut(SYNTHESIZED_WIRE_2),
-	.G(VGA_G),
-	.LinhaOut(SYNTHESIZED_WIRE_4),
-	.R(VGA_R));
 
 integer Arquivo, i, linha, coluna;
 reg [23:0] Imagem [0:479] [0:639];

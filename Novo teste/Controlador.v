@@ -526,7 +526,7 @@ begin
             if (LinhaRobo == 9)
                 head <= 1;
             else
-                head = (Mapa[LinhaRobo + 1][ColunaRobo] == Parede) ? 1 : 0;
+                head <= (Mapa[LinhaRobo + 1][ColunaRobo] == Parede) ? 1 : 0;
 
             // Definicao de left
             if (ColunaRobo == 19)
@@ -554,7 +554,7 @@ begin
                 if (entulho_life == 0) begin
                     entulho_life <= 9; // Entulho pesado
                 end
-                barrier = 1;
+                barrier <= 1;
             end else begin
                 barrier <= 0;
             end

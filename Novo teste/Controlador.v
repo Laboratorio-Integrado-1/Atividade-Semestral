@@ -1,4 +1,4 @@
-module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites);
+module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites, OrientacaoRobo);
 
 parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
 
@@ -16,6 +16,7 @@ output reg [7:0] LEDG;
 output reg [7:0] LEDR;
 output reg [29:0] ColunasSprites;
 output reg [23:0] LinhasSprites;
+output reg [1:0] OrientacaoRobo;
 
 reg [3:0] Mapa [0:9][0:19];
 
@@ -23,28 +24,18 @@ reg [79:0] MapaTemp [0:10];
 
 integer entulho_life; // Vida do entulho, representa quantas iteracoes sÃ£o necessarias para remove-lo
 
-reg [4:0] ColunaCelulaPreta;
-reg [4:0] ColunaRobo;
-reg [4:0] ColunaCursor;
-reg [3:0] LinhaCelulaPreta;
-reg [3:0] LinhaRobo;
-reg [3:0] LinhaCursor;
+reg [4:0] ColunaCelulaPreta, ColunaRobo, ColunaCursor;
+reg [3:0] LinhaCelulaPreta, LinhaRobo, LinhaCursor;
 
 reg [3:0] Orientacao_Hex; 
-reg [7:0] Orientacao_Robo;
+reg [1:0] Orientacao_Robo;
 
-reg [5:0] ContadorFrames;
-reg [5:0] ContadorFramesRobo;
+reg [5:0] ContadorFrames, ContadorFramesRobo;
 
-reg [4:0] ColunaEntulhoLeve;
-reg [4:0] ColunaEntulhoMedio;
-reg [4:0] ColunaEntulhoPesado;
-reg [3:0] LinhaEntulhoLeve;
-reg [3:0] LinhaEntulhoMedio;
-reg [3:0] LinhaEntulhoPesado;
+reg [4:0] ColunaEntulhoLeve, ColunaEntulhoMedio, ColunaEntulhoPesado;
+reg [3:0] LinhaEntulhoLeve, LinhaEntulhoMedio, LinhaEntulhoPesado;
 
-reg IteracaoRobo;
-reg HabilitaNovaLeitura;
+reg IteracaoRobo, HabilitaNovaLeitura;
 
 reg [79:0] temp [0:10];
 integer i, j;
@@ -491,152 +482,152 @@ begin
         N: begin
             // Definicao de head
             if (LinhaRobo == 0) // Situacao de borda do mapa
-                head = 1;
+                head <= 1;
             else
-                head = (Mapa[LinhaRobo - 1][ColunaRobo] == Parede) ? 1 : 0;
+                head <= (Mapa[LinhaRobo - 1][ColunaRobo] == Parede) ? 1 : 0;
 
             // Definiacao de left
             if (ColunaRobo == 0) // Situacao de borda do mapa
-                left = 1;
+                left <= 1;
             else
-                left = (Mapa[LinhaRobo][ColunaRobo - 1] == Parede) ? 1 : 0;
+                left <= (Mapa[LinhaRobo][ColunaRobo - 1] == Parede) ? 1 : 0;
 
             // Definicao de under
-            under = (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
+            under <= (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
 
             // Definicao de barrier
             if (LinhaRobo == 0)// Situacao de borda do mapa
-                barrier = 0;
+                barrier <= 0;
             else if(LinhaRobo - 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 3; // Entulho leve
+                    entulho_life <= 3; // Entulho leve
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo - 1 == LinhaEntulhoMedio && ColunaRobo == ColunaEntulhoMedio) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 6; // Entulho medio
+                    entulho_life <= 6; // Entulho medio
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo - 1 == LinhaEntulhoPesado && ColunaRobo == ColunaEntulhoPesado) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 9; // Entulho pesado
+                    entulho_life <= 9; // Entulho pesado
                 end
-                barrier = 1;
+                barrier <= 1;
             end else begin
-                barrier = 0;
+                barrier <= 0;
             end
             end
         S: begin
             // Definicao de head
             if (LinhaRobo == 9)
-                head = 1;
+                head <= 1;
             else
                 head = (Mapa[LinhaRobo + 1][ColunaRobo] == Parede) ? 1 : 0;
 
             // Definicao de left
             if (ColunaRobo == 19)
-                left = 1;
+                left <= 1;
             else
-                left = (Mapa[LinhaRobo][ColunaRobo + 1] == Parede) ? 1 : 0;
+                left <= (Mapa[LinhaRobo][ColunaRobo + 1] == Parede) ? 1 : 0;
 
             // Definicao de under
-            under = (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
+            under <= (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
 
             // Definicao de barrier
             if (LinhaRobo == 9) // Situacao de borda do mapa
-                barrier = 0;
+                barrier <= 0;
             else if(LinhaRobo + 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 3; // Entulho leve
+                    entulho_life <= 3; // Entulho leve
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo + 1 == LinhaEntulhoMedio && ColunaRobo == ColunaEntulhoMedio) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 6; // Entulho medio
+                    entulho_life <= 6; // Entulho medio
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo + 1 == LinhaEntulhoPesado && ColunaRobo == ColunaEntulhoPesado) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 9; // Entulho pesado
+                    entulho_life <= 9; // Entulho pesado
                 end
                 barrier = 1;
             end else begin
-                barrier = 0;
+                barrier <= 0;
             end
             end
         L: begin
             // Definicao de head
             if (ColunaRobo == 19)
-                head = 1;
+                head <= 1;
             else
-                head = (Mapa[LinhaRobo][ColunaRobo + 1] == Parede) ? 1 : 0;
+                head <= (Mapa[LinhaRobo][ColunaRobo + 1] == Parede) ? 1 : 0;
 
             // Definicao de left
             if (LinhaRobo == 0)
                 left = 1;
             else
-                left = (Mapa[LinhaRobo - 1][ColunaRobo] == Parede) ? 1 : 0;
+                left <= (Mapa[LinhaRobo - 1][ColunaRobo] == Parede) ? 1 : 0;
 
             // Definicao de under
-            under = (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
+            under <= (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
 
             // Definicao de barrier
             if (ColunaRobo == 19)
-                barrier = 0;
+                barrier <= 0;
             else if(LinhaRobo == LinhaEntulhoLeve && ColunaRobo + 1 == ColunaEntulhoLeve) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 3; // Entulho leve
+                    entulho_life <= 3; // Entulho leve
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo == LinhaEntulhoMedio && ColunaRobo + 1 == ColunaEntulhoMedio) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 6; // Entulho medio
+                    entulho_life <= 6; // Entulho medio
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo == LinhaEntulhoPesado && ColunaRobo + 1 == ColunaEntulhoPesado) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 9; // Entulho pesado
+                    entulho_life <= 9; // Entulho pesado
                 end
-                barrier = 1;
+                barrier <= 1;
             end else begin
-                barrier = 0;
+                barrier <= 0;
             end
         end
         O: begin
             // Definicao de head
             if (ColunaRobo == 0)
-                head = 1;
+                head <= 1;
             else
-                head = (Mapa[LinhaRobo][ColunaRobo - 1] == Parede) ? 1 : 0;
+                head <= (Mapa[LinhaRobo][ColunaRobo - 1] == Parede) ? 1 : 0;
 
             // Definicao de left
             if (LinhaRobo == 9)
-                left = 1;
+                left <= 1;
             else
-                left = (Mapa[LinhaRobo + 1][ColunaRobo] == Parede) ? 1 : 0;
+                left <= (Mapa[LinhaRobo + 1][ColunaRobo] == Parede) ? 1 : 0;
 
             // Definicao de under
-            under = (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
+            under <= (LinhaRobo == LinhaCelulaPreta && ColunaRobo == ColunaCelulaPreta) ? 1 : 0;
 
             if (ColunaRobo == 0)
-                barrier = 0;
+                barrier <= 0;
             else if(LinhaRobo == LinhaEntulhoLeve && ColunaRobo - 1 == ColunaEntulhoLeve) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 3; // Entulho leve
+                    entulho_life <= 3; // Entulho leve
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo == LinhaEntulhoMedio && ColunaRobo - 1 == ColunaEntulhoMedio) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 6; // Entulho medio
+                    entulho_life <= 6; // Entulho medio
                 end
-                barrier = 1;
+                barrier <= 1;
             end else if(LinhaRobo == LinhaEntulhoPesado && ColunaRobo - 1 == ColunaEntulhoPesado) begin
                 if (entulho_life == 0) begin
-                    entulho_life = 9; // Entulho pesado
+                    entulho_life <= 9; // Entulho pesado
                 end
-                barrier = 1;
+                barrier <= 1;
             end else begin
-                barrier = 0;
+                barrier <= 0;
             end
         end
     endcase
@@ -646,63 +637,63 @@ endtask
 task Atualiza_Posicao_Robo;
 begin
     if (entulho_life > 0 && remover) begin
-        entulho_life = entulho_life - 1;
+        entulho_life <= entulho_life - 1;
         if (entulho_life == 0) begin
             case (Orientacao_Robo)
                 N: begin
                     if(LinhaRobo - 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
-                        LinhaEntulhoLeve = 20;
-                        ColunaEntulhoLeve = 20;
+                        LinhaEntulhoLeve <= 20;
+                        ColunaEntulhoLeve <= 20;
                     end
                     else if(LinhaRobo - 1 == LinhaEntulhoMedio && ColunaRobo == ColunaEntulhoMedio) begin
-                        LinhaEntulhoMedio = 20;
-                        ColunaEntulhoMedio = 20;
+                        LinhaEntulhoMedio <= 20;
+                        ColunaEntulhoMedio <= 20;
                     end
                     else if(LinhaRobo - 1 == LinhaEntulhoPesado && ColunaRobo == ColunaEntulhoPesado) begin
-                        LinhaEntulhoPesado = 20;
-                        ColunaEntulhoPesado = 20;
+                        LinhaEntulhoPesado <= 20;
+                        ColunaEntulhoPesado <= 20;
                     end
                 end
                 S: begin
                     if(LinhaRobo + 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
-                        LinhaEntulhoLeve = 20;
-                        ColunaEntulhoLeve = 20;
+                        LinhaEntulhoLeve <= 20;
+                        ColunaEntulhoLeve <= 20;
                     end
                     else if(LinhaRobo + 1 == LinhaEntulhoMedio && ColunaRobo == ColunaEntulhoMedio) begin
-                        LinhaEntulhoMedio = 20;
-                        ColunaEntulhoMedio = 20;
+                        LinhaEntulhoMedio <= 20;
+                        ColunaEntulhoMedio <= 20;
                     end
                     else if(LinhaRobo + 1 == LinhaEntulhoPesado && ColunaRobo == ColunaEntulhoPesado) begin
-                        LinhaEntulhoPesado = 20;
-                        ColunaEntulhoPesado = 20;
+                        LinhaEntulhoPesado <= 20;
+                        ColunaEntulhoPesado <= 20;
                     end
                 end
                 L: begin
                     if(LinhaRobo == LinhaEntulhoLeve && ColunaRobo + 1 == ColunaEntulhoLeve) begin
-                        LinhaEntulhoLeve = 20;
-                        ColunaEntulhoLeve = 20;
+                        LinhaEntulhoLeve <= 20;
+                        ColunaEntulhoLeve <= 20;
                     end
                     else if(LinhaRobo == LinhaEntulhoMedio && ColunaRobo + 1 == ColunaEntulhoMedio) begin
-                        LinhaEntulhoMedio = 20;
-                        ColunaEntulhoMedio = 20;
+                        LinhaEntulhoMedio <= 20;
+                        ColunaEntulhoMedio <= 20;
                     end
                     else if(LinhaRobo == LinhaEntulhoPesado && ColunaRobo + 1 == ColunaEntulhoPesado) begin
-                        LinhaEntulhoPesado = 20;
-                        ColunaEntulhoPesado = 20;
+                        LinhaEntulhoPesado <= 20;
+                        ColunaEntulhoPesado <= 20;
                     end
                 end		
                 O: begin
                     if(LinhaRobo == LinhaEntulhoLeve && ColunaRobo - 1 == ColunaEntulhoLeve) begin
-                        LinhaEntulhoLeve = 20;
-                        ColunaEntulhoLeve = 20;
+                        LinhaEntulhoLeve <= 20;
+                        ColunaEntulhoLeve <= 20;
                     end
                     else if(LinhaRobo == LinhaEntulhoMedio && ColunaRobo - 1 == ColunaEntulhoMedio) begin
-                        LinhaEntulhoMedio = 20;
-                        ColunaEntulhoMedio = 20;
+                        LinhaEntulhoMedio <= 20;
+                        ColunaEntulhoMedio <= 20;
                     end
                     else if(LinhaRobo == LinhaEntulhoPesado && ColunaRobo - 1 == ColunaEntulhoPesado) begin
-                        LinhaEntulhoPesado = 20;
-                        ColunaEntulhoPesado = 20;
+                        LinhaEntulhoPesado <= 20;
+                        ColunaEntulhoPesado <= 20;
                     end
                 end
             endcase
@@ -712,41 +703,41 @@ begin
         N: begin
                 if (avancar)
                 begin
-                    LinhaRobo = LinhaRobo - 1;
+                    LinhaRobo <= LinhaRobo - 1;
                 end
                 else if (girar)
                 begin
-                    Orientacao_Robo = O;
+                    Orientacao_Robo <= O;
                 end
             end
         S: begin
                 if (avancar)
                 begin
-                    LinhaRobo = LinhaRobo + 1;
+                    LinhaRobo <= LinhaRobo + 1;
                 end
                 else if (girar)
                 begin
-                    Orientacao_Robo = L;
+                    Orientacao_Robo <= L;
                 end
             end
         L: begin
                 if (avancar)
                 begin
-                    ColunaRobo = ColunaRobo + 1;
+                    ColunaRobo <= ColunaRobo + 1;
                 end
                 else if (girar)
                 begin
-                    Orientacao_Robo = N;
+                    Orientacao_Robo <= N;
                 end
             end
         O: begin
                 if (avancar)
                 begin
-                    ColunaRobo = ColunaRobo - 1;
+                    ColunaRobo <= ColunaRobo - 1;
                 end
                 else if (girar)
                 begin
-                    Orientacao_Robo = S;
+                    Orientacao_Robo <= S;
                 end
             end
     endcase
@@ -776,8 +767,11 @@ endfunction
 
 always @(negedge Clock50)
 begin
-    ColunasSprites <= {ColunaCelulaPreta - 1, ColunaEntulhoLeve - 1, ColunaEntulhoMedio - 1, ColunaEntulhoPesado - 1, ColunaRobo -1 , ColunaCursor - 1};
-    LinhasSprites <= {LinhaCelulaPreta - 1, LinhaEntulhoLeve - 1, LinhaEntulhoMedio - 1, LinhaEntulhoPesado - 1, LinhaRobo - 1, LinhaCursor - 1};
+    if (!reset)
+    begin
+        ColunasSprites <= {ColunaCelulaPreta - 1, ColunaEntulhoLeve - 1, ColunaEntulhoMedio - 1, ColunaEntulhoPesado - 1, ColunaRobo - 1, ColunaCursor - 1};
+        LinhasSprites <= {LinhaCelulaPreta - 1, LinhaEntulhoLeve - 1, LinhaEntulhoMedio - 1, LinhaEntulhoPesado - 1, LinhaRobo - 1, LinhaCursor - 1};
+        OrientacaoRobo <= Orientacao_Robo;
+    end
 end
-
 endmodule 

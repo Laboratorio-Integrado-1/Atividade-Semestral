@@ -1,9 +1,10 @@
-module Grafico (Clock50, Clock25, Reset, ColunasSprites, LinhasSprites, Coluna, Linha, RGB);
+module Grafico (Clock50, Clock25, Reset, ColunasSprites, LinhasSprites, Coluna, Linha, RGB, OrientacaoRobo);
 
 input Clock50, Clock25, Reset;
 input [29:0] ColunasSprites;
 input [9:0] Linha, Coluna;
 input [23:0] LinhasSprites;
+input [1:0] OrientacaoRobo;
 output reg [23:0] RGB;
 
 // Estados
@@ -77,7 +78,8 @@ parameter	COR_TRANSPARENTE = 24'h000000,
 				COR_VERDE = 24'h00FF00,
 				COR_VERMELHO = 24'hFF0000;	
 
-				
+parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
+
 reg [4:0] EstadoAtual, EstadoFuturo;
 reg [2:0] VetorPixels [0:31];
 reg ZonaAtiva;

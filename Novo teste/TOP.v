@@ -13,10 +13,8 @@ module TOP(
 	VGA_BLANK_N,
 	VGA_CLK,
 	Select,
-	ColunasSprites,
 	LEDG,
 	LEDR,
-	LinhasSprites,
 	VGA_B,
 	VGA_G,
 	VGA_R
@@ -36,18 +34,16 @@ output wire	VGA_HS;
 output wire	VGA_BLANK_N;
 output wire	VGA_CLK;
 output wire	Select;
-output wire	[29:0] ColunasSprites;
 output wire	[7:0] LEDG;
 output wire	[11:0] LEDR;
-output wire	[23:0] LinhasSprites;
 output wire	[7:0] VGA_B;
 output wire	[7:0] VGA_G;
 output wire	[7:0] VGA_R;
 
 wire	[9:0] SYNTHESIZED_WIRE_2;
-wire	[23:0] SYNTHESIZED_WIRE_3;
+wire	[29:0] SYNTHESIZED_WIRE_3;
 wire	[9:0] SYNTHESIZED_WIRE_4;
-wire	[17:0] SYNTHESIZED_WIRE_5;
+wire	[23:0] SYNTHESIZED_WIRE_5;
 wire	[23:0] SYNTHESIZED_WIRE_7;
 wire	SYNTHESIZED_WIRE_15;
 wire	[11:0] SYNTHESIZED_WIRE_10;
@@ -58,12 +54,11 @@ wire	SYNTHESIZED_WIRE_14;
 wire	SYNTHESIZED_WIRE_16;
 wire	SYNTHESIZED_WIRE_17;
 wire	SYNTHESIZED_WIRE_18;
+wire	SYNTHESIZED_WIRE_19;
 
 assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
-assign	ColunasSprites = SYNTHESIZED_WIRE_3;
 assign	LEDR = SYNTHESIZED_WIRE_10;
-assign	LinhasSprites = SYNTHESIZED_WIRE_5;
 assign	Head = SYNTHESIZED_WIRE_11;
 assign	Left = SYNTHESIZED_WIRE_12;
 assign	Under = SYNTHESIZED_WIRE_13;
@@ -76,11 +71,12 @@ Grafico	b2v_inst(
     .Clock50(CLOCK_50),
     .Clock25(CLOCK_25),
 	.Reset(SW),
-	.ColunasSprites(ColunasSprites),
-	.LinhasSprites(LinhasSprites),
+	.ColunasSprites(SYNTHESIZED_WIRE_3),
+	.LinhasSprites(SYNTHESIZED_WIRE_5),
     .Linha(SYNTHESIZED_WIRE_4),
 	.Coluna(SYNTHESIZED_WIRE_2),
-    .RGB(SYNTHESIZED_WIRE_7));
+    .RGB(SYNTHESIZED_WIRE_7),
+	.OrientacaoRobo(SYNTHESIZED_WIRE_19));
 
 
 Interface_VGA b2v_inst1(
@@ -112,7 +108,8 @@ Controlador	b2v_inst4(
 	.LEDG(LEDG),
 	.LEDR(LEDR),
 	.ColunasSprites(SYNTHESIZED_WIRE_3),
-	.LinhasSprites(SYNTHESIZED_WIRE_5));
+	.LinhasSprites(SYNTHESIZED_WIRE_5),
+	.OrientacaoRobo(SYNTHESIZED_WIRE_19));
 
 
 Controle b2v_inst7(

@@ -11,18 +11,16 @@ reg	Pino4;
 reg	Pino6;
 reg	Pino9;
 reg	[17:17] SW;
-wire	VGA_VS;
-wire	VGA_HS;
-wire	VGA_BLANK_N;
-wire	VGA_CLK;
-wire	Select;
-wire	[29:0] ColunasSprites;
-wire	[7:0] LEDG;
-wire	[11:0] LEDR;
-wire	[23:0] LinhasSprites;
-wire	[7:0] VGA_B;
-wire	[7:0] VGA_G;
-wire	[7:0] VGA_R;
+wire VGA_VS;
+wire VGA_HS;
+wire VGA_BLANK_N;
+wire VGA_CLK;
+wire Select;
+wire [7:0] LEDG;
+wire [11:0] LEDR;
+wire [7:0] VGA_B;
+wire [7:0] VGA_G;
+wire [7:0] VGA_R;
 
 TOP DUV (
 	CLOCK_50,
@@ -39,10 +37,8 @@ TOP DUV (
 	VGA_BLANK_N,
 	VGA_CLK,
 	Select,
-	ColunasSprites,
 	LEDG,
 	LEDR,
-	LinhasSprites,
 	VGA_B,
 	VGA_G,
 	VGA_R

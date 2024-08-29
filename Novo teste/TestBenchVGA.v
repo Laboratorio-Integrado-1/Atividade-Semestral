@@ -23,6 +23,7 @@ assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
 reg [29:0] ColunasSprites;
 reg [23:0] LinhasSprites;
+reg [1:0] OrientacaoRobo;
 
 Grafico b2v_inst(
     .Clock50(CLOCK_50),
@@ -32,7 +33,8 @@ Grafico b2v_inst(
 	.LinhasSprites(LinhasSprites),
     .Linha(SYNTHESIZED_WIRE_4),
 	.Coluna(SYNTHESIZED_WIRE_2),
-    .RGB(SYNTHESIZED_WIRE_7)
+    .RGB(SYNTHESIZED_WIRE_7),
+	.OrientacaoRobo(OrientacaoRobo)
 );
 
 Interface_VGA	b2v_inst1(
@@ -69,6 +71,7 @@ begin
 	//LinhasSprites = {LinhaCelulaPreta, LinhaLixo1, LinhaLixo2, LinhaLixo3, LinhaRobo, LinhaCursor};
 	ColunasSprites = 30'b10011_00100_10000_10010_10011_10000;
 	LinhasSprites = 24'b0100_0101_0110_0100_0100_0100;
+	OrientacaoRobo = 2'b10;
 	//ColunasSprites = 30'b00010_00100_10000_10010_00010_10000;
 	//LinhasSprites = 24'b0010_0101_0110_0100_0010_0100;
 	SW = 1;

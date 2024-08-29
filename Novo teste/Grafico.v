@@ -3,7 +3,7 @@ module Grafico (Clock50, Clock25, Reset, ColunasSprites, LinhasSprites, Coluna, 
 input Clock50, Clock25, Reset;
 input [23:0] ColunasSprites;
 input [9:0] Linha, Coluna;
-input [17:0] LinhasSprites;
+input [23:0] LinhasSprites;
 output reg [23:0] RGB;
 
 // Estados
@@ -114,12 +114,12 @@ wire [3:0] ColunaLixo3;
 wire [3:0] ColunaRobo;
 wire [3:0] ColunaCursor;
 
-wire [2:0] LinhaCelulaPreta;
-wire [2:0] LinhaLixo1;
-wire [2:0] LinhaLixo2;
-wire [2:0] LinhaLixo3;
-wire [2:0] LinhaRobo;
-wire [2:0] LinhaCursor;
+wire [3:0] LinhaCelulaPreta;
+wire [3:0] LinhaLixo1;
+wire [3:0] LinhaLixo2;
+wire [3:0] LinhaLixo3;
+wire [3:0] LinhaRobo;
+wire [3:0] LinhaCursor;
 
 assign ColunaCelulaPreta = ColunasSprites[23:20];
 assign ColunaLixo1 = ColunasSprites[19:16];
@@ -128,12 +128,12 @@ assign ColunaLixo3 = ColunasSprites[11:8];
 assign ColunaRobo = ColunasSprites[7:4];
 assign ColunaCursor = ColunasSprites[3:0];
 
-assign LinhaCelulaPreta = LinhasSprites[17:15];
-assign LinhaLixo1 = LinhasSprites[14:12];
-assign LinhaLixo2 = LinhasSprites[11:9];
-assign LinhaLixo3 = LinhasSprites[8:6];
-assign LinhaRobo = LinhasSprites[5:3];
-assign LinhaCursor = LinhasSprites[2:0];
+assign LinhaCelulaPreta = LinhasSprites[23:20];
+assign LinhaLixo1 = LinhasSprites[19:16];
+assign LinhaLixo2 = LinhasSprites[15:12];
+assign LinhaLixo3 = LinhasSprites[11:8];
+assign LinhaRobo = LinhasSprites[7:4];
+assign LinhaCursor = LinhasSprites[3:0];
 
 // Sprites
 // Sprite 000 = Robo

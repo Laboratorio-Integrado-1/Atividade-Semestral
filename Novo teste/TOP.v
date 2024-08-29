@@ -22,7 +22,6 @@ module TOP(
 	VGA_R
 );
 
-
 input wire	CLOCK_50;
 input wire	CLOCK_25;
 input wire	Pino1;
@@ -37,10 +36,10 @@ output wire	VGA_HS;
 output wire	VGA_BLANK_N;
 output wire	VGA_CLK;
 output wire	Select;
-output wire	[23:0] ColunasSprites;
+output wire	[29:0] ColunasSprites;
 output wire	[7:0] LEDG;
 output wire	[11:0] LEDR;
-output wire	[17:0] LinhasSprites;
+output wire	[23:0] LinhasSprites;
 output wire	[7:0] VGA_B;
 output wire	[7:0] VGA_G;
 output wire	[7:0] VGA_R;
@@ -73,16 +72,18 @@ assign	Avancar = SYNTHESIZED_WIRE_16;
 assign	Girar = SYNTHESIZED_WIRE_17;
 assign	Recolher_Entulho = SYNTHESIZED_WIRE_18;
 
-VGA_GRAPHS	b2v_inst(
-	.reset(SW),
-    .clock_50(CLOCK_50),
-    .clock_25(CLOCK_25),
+Grafico	b2v_inst(
+    .Clock50(CLOCK_50),
+    .Clock25(CLOCK_25),
+	.Reset(SW),
+	.ColunasSprites(ColunasSprites),
+	.LinhasSprites(LinhasSprites),
     .Linha(SYNTHESIZED_WIRE_4),
 	.Coluna(SYNTHESIZED_WIRE_2),
     .RGB(SYNTHESIZED_WIRE_7));
 
 
-Interface_VGA	b2v_inst1(
+Interface_VGA b2v_inst1(
 	.Clock(CLOCK_25),
 	.Reset(SW),
 	.RGB(SYNTHESIZED_WIRE_7),
@@ -98,16 +99,23 @@ Interface_VGA	b2v_inst1(
 
 Controlador	b2v_inst4(
 	.Clock50(CLOCK_50),
-	.Reset(SW),
-	.v_sync(SYNTHESIZED_WIRE_15),
+	.reset(SW),
 	.Entradas(SYNTHESIZED_WIRE_10),
-	.ColunasSprites(SYNTHESIZED_WIRE_3),
+	.v_sync(SYNTHESIZED_WIRE_15),
+	.avancar(Avancar),
+	.head(Head),
+	.left(Left),
+	.under(Under),
+	.barrier(Barrier),
+	.girar(Girar),
+	.remover(Recolher_Entulho),
 	.LEDG(LEDG),
 	.LEDR(LEDR),
+	.ColunasSprites(SYNTHESIZED_WIRE_3),
 	.LinhasSprites(SYNTHESIZED_WIRE_5));
 
 
-Controle	b2v_inst7(
+Controle b2v_inst7(
 	.Clock50(CLOCK_50),
 	.Reset(SW),
 	.Pino1(Pino1),
@@ -121,7 +129,7 @@ Controle	b2v_inst7(
 	.Saidas(SYNTHESIZED_WIRE_10));
 
 
-Robo 	b2v_inst8(
+Robo b2v_inst8(
 	.clock(CLOCK_50), 
 	.reset(SW), 
 	.head(Head), 

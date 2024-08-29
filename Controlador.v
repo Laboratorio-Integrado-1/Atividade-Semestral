@@ -1,6 +1,7 @@
 module Contolador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LinhaSprites1, LinhaSprites2, LinhaSprites3, LinhaSprites4, LinhaSprites5, LinhaSprites6, LinhaSprites7, LinhaSprites8, LinhaSprites9, LinhaSprites10);
 
-parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
+// parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
+parameter N = 2'b00, O = 2'b01, S = 2'b10, L = 2'b11;
 
 input Clock50, reset, v_sync;
 input [11:0] Entradas;

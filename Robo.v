@@ -1,10 +1,12 @@
-module Robo (clock, reset, head, left, under, barrier, avancar, girar, recolher_entulho);
+module Robo (clock, reset, head, left, under, barrier, avancar, girar, recolher_entulho, direcao_input, direcao_output);
 // Inputs, Outputs, Registradores e Par�metros
-input clock, reset, head, left, under, barrier;		// Sinais de Entrada
-output reg avancar, girar, recolher_entulho;		// Sinais de Saida
-reg [2:0] EstadoAtual, EstadoFuturo; 			// Registrador de 3 bits p/ 5 estados
-reg [1:0] contador;					// Registrador p/ contador de saida recolher entulho
-reg flag_Stop;						// Registrador p/ flag de parada do StandBy
+input clock, reset, head, left, under, barrier;					// Sinais de Entrada
+input reg [1:0] direcao_input							// diracao atual
+output reg avancar, girar, recolher_entulho;					// Sinais de Saida
+output reg [1:0] direcao_output;						// direcao output
+reg [2:0] EstadoAtual, EstadoFuturo; 							// Registrador de 3 bits p/ 5 estados
+reg [1:0] contador;												// Registrador p/ contador de saida recolher entulho
+reg flag_Stop;													// Registrador p/ flag de parada do StandBy
 
 // Parametros do Codigo (Estados da FSM)
 parameter StandBy = 3'b000,
@@ -21,6 +23,11 @@ begin
     avancar = 1'b0;
     girar = 1'b0;
     recolher_entulho = 1'b0;
+	direcao_output = direcao_input;
+							// 00 -> N
+							// 01 -> O
+							// 10 -> S
+							// 11 -> L
 
 // Estrutura Switch-Case p/ Verificacao de Estado Atual + Escolha de Proximo Estado
     case (EstadoAtual)
@@ -88,6 +95,24 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
+
 				end
 
 			4'b1001: EstadoFuturo = StandBy;
@@ -96,6 +121,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1011: EstadoFuturo = StandBy;
@@ -104,6 +146,23 @@ begin
 				begin
 					EstadoFuturo = Giros;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1101: EstadoFuturo = StandBy;
@@ -112,6 +171,23 @@ begin
 				begin
 					EstadoFuturo = Giros;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1111: EstadoFuturo = StandBy;
@@ -129,6 +205,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b0001:
@@ -173,6 +266,23 @@ begin
 				begin
 					EstadoFuturo = Giros;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1101: EstadoFuturo = StandBy;
@@ -241,6 +351,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1001: EstadoFuturo = StandBy;
@@ -249,6 +376,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1011: EstadoFuturo = StandBy;
@@ -257,6 +401,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1101: EstadoFuturo = StandBy;
@@ -265,6 +426,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1111: EstadoFuturo = StandBy;
@@ -353,6 +531,23 @@ begin
 				begin
 					EstadoFuturo = Avancando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b0001:
@@ -365,6 +560,23 @@ begin
 				begin
 					EstadoFuturo = Avancando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b0011:
@@ -401,6 +613,23 @@ begin
 				begin
 					EstadoFuturo = Giros;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1001: EstadoFuturo = StandBy;
@@ -409,6 +638,23 @@ begin
 				begin
 					EstadoFuturo = Giros;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1011: EstadoFuturo = StandBy;
@@ -417,6 +663,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1101: EstadoFuturo = StandBy;
@@ -425,6 +688,23 @@ begin
 				begin
 					EstadoFuturo = Rotacionando;
 					girar = 1'b1;
+					
+					if (direcao_input == 2'b00)
+					begin
+						direcao_output = 2'b01;
+					end
+					if (direcao_input == 2'b01)
+					begin
+						direcao_output = 2'b10;
+					end
+					if (direcao_input == 2'b10)
+					begin
+						direcao_output = 2'b11;
+					end
+					if (direcao_input == 2'b11)
+					begin
+						direcao_output = 2'b00;
+					end
 				end
 
 			4'b1111: EstadoFuturo = StandBy;

@@ -47,7 +47,7 @@ reg btn_step;
 reg v_sync_Primeiro_FlipFLop, v_sync_Segundo_FlipFLop;
 wire Flag;
 
-task taskLerMapa
+task taskLerMapa;
 	begin
 		 /*
 		 MapaTemp[0] = 80'h11111111111111111111;

@@ -37,7 +37,7 @@ parameter 	LINHA_MAPA_1 = 235,
 				LINHA_MAPA_8 = 347,
 				LINHA_MAPA_9 = 363,
 				LINHA_MAPA_10 = 379,
- 				LINHA_INFERIOR = 395,
+ 				LINHA_INFERIOR = 394,
 				COLUNA_MAPA_1 = 316,
 				COLUNA_MAPA_2 = 332,
 				COLUNA_MAPA_3 = 348,
@@ -789,7 +789,7 @@ begin
 			
 		FILEIRA_FINAL_LADO_DIREITO:
 		begin
-			if (ColunaMapa == 10)
+			if (ColunaMapa == 20)
 			begin
 				EstadoFuturo = LER_FILEIRA_MAPA;
 			end

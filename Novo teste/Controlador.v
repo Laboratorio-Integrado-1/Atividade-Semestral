@@ -1,4 +1,4 @@
-module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites, OrientacaoRobo);
+module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites, OrientacaoRobo, AtivaRobo);
 
 parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
 
@@ -17,6 +17,7 @@ output reg [7:0] LEDR;
 output reg [29:0] ColunasSprites;
 output reg [23:0] LinhasSprites;
 output reg [1:0] OrientacaoRobo;
+output reg AtivaRobo;
 
 wire [3:0] Mapa [0:9][0:19];
 wire [79:0] MapaTemp [0:10];
@@ -339,6 +340,7 @@ begin
         FlagAtualizaPosicao <= 0;
         ContadorFramesRobo <= 0;
         ContadorFrames <= 0;
+        AtivaRobo <= 0;
 
 	    LEDG <= 8'b00010000;
         LEDR <= 8'b00010000;
@@ -365,6 +367,7 @@ begin
             ContadorFramesRobo <= 0;
             FlagAtualizaPosicao <= 1;
             Define_Sensores;
+            AtivaRobo <= 1;
         end
 
         if (FlagAtualizaPosicao && Flag)
@@ -377,7 +380,8 @@ begin
             if(!step_mode) begin
                 Atualiza_Posicao_Robo;
             end
-	    FlagAtualizaPosicao <= 0;
+	        FlagAtualizaPosicao <= 0;
+            AtivaRobo <= 0;
         end
 
         if (Situacoes_Anomalas(1)) begin
@@ -805,7 +809,7 @@ task Atualiza_Posicao_Robo;
 begin
     if (entulho_life > 0 && remover) begin
         entulho_life <= entulho_life - 1;
-        if (entulho_life == 0) begin
+        if (entulho_life == 1) begin
             case (Orientacao_Robo)
                 N: begin
                     if(LinhaRobo - 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin

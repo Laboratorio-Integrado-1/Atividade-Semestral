@@ -99,7 +99,7 @@ Controlador	b2v_inst4(
 	.Clock50(CLOCK_50),
 	.reset(SW),
 	.Entradas(SYNTHESIZED_WIRE_10),
-	.v_sync(v_sync),
+	.v_sync(SYNTHESIZED_WIRE_15),
 	.avancar(Avancar),
 	.head(SYNTHESIZED_WIRE_11),
 	.left(SYNTHESIZED_WIRE_12),

@@ -372,6 +372,8 @@ begin
 
         if (FlagAtualizaPosicao && Flag)
         begin
+            //$display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
+            //$display ("Linha = %d Coluna = %d Orientacao = %d", LinhaRobo, ColunaRobo, Orientacao_Robo);
             if (step_mode && btn_step) begin
                 Atualiza_Posicao_Robo;
                 btn_step <= 0;
@@ -385,8 +387,9 @@ begin
         end
 
         if (Situacoes_Anomalas(1)) begin
-            $display("Estado AnÃ´malo Detectado. Aguardando reset...");
-            @ (negedge reset);
+            //$display("Estado Anomalo Detectado. Aguardando reset...");
+            //@ (negedge reset);
+            //$break;
         end 
 
         if (Flag)
@@ -809,7 +812,9 @@ task Atualiza_Posicao_Robo;
 begin
     if (entulho_life > 0 && remover) begin
         entulho_life <= entulho_life - 1;
+        //$display("Removendo entulho... %d ciclos restantes", entulho_life);
         if (entulho_life == 1) begin
+            //$display("Entulho removido.");
             case (Orientacao_Robo)
                 N: begin
                     if(LinhaRobo - 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
@@ -912,6 +917,28 @@ begin
                 end
             end
     endcase
+    /*
+    for (i = 0; i < 10; i = i + 1) begin
+        for (j = 0; j < 20; j = j + 1) begin
+                if (i == LinhaRobo && j == ColunaRobo) begin
+                    $write("%s", "R");
+                end else if (i == CelulaPreta && j == ColunaCelulaPreta) begin
+                    $write("%h", 4'h8);
+                end else if (i == LinhaEntulhoLeve && j == ColunaEntulhoLeve) begin
+                    $write("%h", 4'h2);
+                end else if (i == LinhaEntulhoMedio && j == ColunaEntulhoMedio) begin
+                    $write("%h", 4'h3);
+                end else if (i == LinhaEntulhoPesado && j == ColunaEntulhoPesado) begin
+                    $write("%h", 4'h4);
+                end else begin
+                    $write("%h", Mapa[i][j]);
+                end
+            end
+    $write("\n");
+    end
+    $write("\n");
+    $write("\n");
+    */
 end
 endtask
 

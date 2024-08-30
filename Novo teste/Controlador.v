@@ -36,7 +36,6 @@ reg [3:0] LinhaEntulhoLeve, LinhaEntulhoMedio, LinhaEntulhoPesado;
 
 reg IteracaoRobo, HabilitaNovaLeitura, FlagAtualizaPosicao;
 
-
 reg [79:0] temp [0:10];
 integer i, j;
 
@@ -336,7 +335,10 @@ begin
         LinhaCursor <= 4'h03;
 
 	    HabilitaNovaLeitura <= 1;
-        IteracaoRobo <= 1;
+        IteracaoRobo <= 0;
+        FlagAtualizaPosicao <= 0;
+        ContadorFramesRobo <= 0;
+        ContadorFrames <= 0;
 
 	    LEDG <= 8'b00010000;
         LEDR <= 8'b00010000;
@@ -348,61 +350,64 @@ begin
         btn_step <= 0; 
         entulho_life <= 0; // Inicializa a vida do entulho como 0
 	end
-	
-	if (HabilitaNovaLeitura && Flag)
-	begin
-		HabilitaNovaLeitura <= 0;
-		ContadorFrames <= 0;		
-		Le_Inputs;
-	end
-
-    if (IteracaoRobo && Flag)
+    else
     begin
-        Define_Sensores;
-        IteracaoRobo <= 0;
-        ContadorFramesRobo <= 0;
-    end
-
-    if (FlagAtualizaPosicao)
-    begin
-        if (step_mode && btn_step) begin
-            Atualiza_Posicao_Robo;
-            btn_step <= 0;
-        end
-        
-        if(!step_mode) begin
-            Atualiza_Posicao_Robo;
-        end
-    end
-
-    if (Situacoes_Anomalas(1)) begin
-        $display("Estado AnÃ´malo Detectado. Aguardando reset...");
-        @ (negedge reset);
-    end 
-
-	if (Flag)
-	begin
-		if (ContadorFrames == 4)
-		begin
-			HabilitaNovaLeitura <= 1;
-			ContadorFrames <= 0;
-		end
-		else
-		begin
-			ContadorFrames <= ContadorFrames + 1;	
-		end
-
-        if(ContadorFramesRobo == 8)
+        if (HabilitaNovaLeitura && Flag)
         begin
+            HabilitaNovaLeitura <= 0;
+            ContadorFrames <= 0;		
+            Le_Inputs;
+        end
+
+        if (IteracaoRobo && Flag)
+        begin
+            IteracaoRobo <= 0;
             ContadorFramesRobo <= 0;
-            IteracaoRobo <= 1;
-        end
-        else
-        begin
-            ContadorFramesRobo <= ContadorFramesRobo + 1;
+            FlagAtualizaPosicao <= 1;
+            Define_Sensores;
         end
 
-	end	
+        if (FlagAtualizaPosicao && Flag)
+        begin
+            if (step_mode && btn_step) begin
+                Atualiza_Posicao_Robo;
+                btn_step <= 0;
+            end
+            
+            if(!step_mode) begin
+                Atualiza_Posicao_Robo;
+            end
+	    FlagAtualizaPosicao <= 0;
+        end
+
+        if (Situacoes_Anomalas(1)) begin
+            $display("Estado AnÃ´malo Detectado. Aguardando reset...");
+            @ (negedge reset);
+        end 
+
+        if (Flag)
+        begin
+            if (ContadorFrames == 4)
+            begin
+                HabilitaNovaLeitura <= 1;
+                ContadorFrames <= 0;
+            end
+            else
+            begin
+                ContadorFrames <= ContadorFrames + 1;	
+            end
+
+            if(ContadorFramesRobo == 8)
+            begin
+                ContadorFramesRobo <= 0;
+                IteracaoRobo <= 1;
+            end
+            else
+            begin
+                ContadorFramesRobo <= ContadorFramesRobo + 1;
+            end
+        end	
+    end
 end
 
 task Le_Inputs;

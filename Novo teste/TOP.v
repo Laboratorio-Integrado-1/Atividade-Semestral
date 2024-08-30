@@ -97,7 +97,7 @@ Controlador	b2v_inst4(
 	.Clock50(CLOCK_50),
 	.reset(SW),
 	.Entradas(SYNTHESIZED_WIRE_10),
-	.v_sync(SYNTHESIZED_WIRE_15),
+	.v_sync(CLOCK_25),
 	.avancar(Avancar),
 	.head(SYNTHESIZED_WIRE_11),
 	.left(SYNTHESIZED_WIRE_12),
@@ -109,7 +109,8 @@ Controlador	b2v_inst4(
 	.LEDR(LEDR),
 	.ColunasSprites(SYNTHESIZED_WIRE_3),
 	.LinhasSprites(SYNTHESIZED_WIRE_5),
-	.OrientacaoRobo(SYNTHESIZED_WIRE_19));
+	.OrientacaoRobo(SYNTHESIZED_WIRE_19),
+	.AtivaRobo(SYNTHESIZED_WIRE_20));
 
 
 Controle b2v_inst7(
@@ -127,7 +128,7 @@ Controle b2v_inst7(
 
 
 Robo b2v_inst8(
-	.clock(CLOCK_50), 
+	.clock(SYNTHESIZED_WIRE_20), 
 	.reset(SW), 
 	.head(SYNTHESIZED_WIRE_11), 
 	.left(SYNTHESIZED_WIRE_12), 

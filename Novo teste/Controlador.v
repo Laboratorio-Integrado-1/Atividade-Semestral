@@ -34,7 +34,8 @@ reg [5:0] ContadorFrames, ContadorFramesRobo;
 reg [4:0] ColunaEntulhoLeve, ColunaEntulhoMedio, ColunaEntulhoPesado;
 reg [3:0] LinhaEntulhoLeve, LinhaEntulhoMedio, LinhaEntulhoPesado;
 
-reg IteracaoRobo, HabilitaNovaLeitura;
+reg IteracaoRobo, HabilitaNovaLeitura, FlagAtualizaPosicao;
+
 
 reg [79:0] temp [0:10];
 integer i, j;
@@ -352,20 +353,18 @@ begin
 	begin
 		HabilitaNovaLeitura <= 0;
 		ContadorFrames <= 0;		
-		
 		Le_Inputs;
-        Define_Sensores;
 	end
 
     if (IteracaoRobo && Flag)
     begin
+        Define_Sensores;
         IteracaoRobo <= 0;
         ContadorFramesRobo <= 0;
+    end
 
-        // Espera o robÃ´ rodar para atualizar a posiÃ§Ã£o
-        @ (negedge Clock50);
-
-        // VerificaÃ§Ãµes do tipo de execuÃ§Ã£o
+    if (FlagAtualizaPosicao)
+    begin
         if (step_mode && btn_step) begin
             Atualiza_Posicao_Robo;
             btn_step <= 0;

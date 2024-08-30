@@ -40,32 +40,32 @@ output wire	[7:0] VGA_B;
 output wire	[7:0] VGA_G;
 output wire	[7:0] VGA_R;
 
-wire	[9:0] SYNTHESIZED_WIRE_2;
-wire	[29:0] SYNTHESIZED_WIRE_3;
-wire	[9:0] SYNTHESIZED_WIRE_4;
-wire	[23:0] SYNTHESIZED_WIRE_5;
-wire	[23:0] SYNTHESIZED_WIRE_7;
-wire	SYNTHESIZED_WIRE_15;
-wire	[11:0] SYNTHESIZED_WIRE_10;
-wire	SYNTHESIZED_WIRE_11;
-wire	SYNTHESIZED_WIRE_12;
-wire	SYNTHESIZED_WIRE_13;
-wire	SYNTHESIZED_WIRE_14;
-wire	SYNTHESIZED_WIRE_16;
-wire	SYNTHESIZED_WIRE_17;
-wire	SYNTHESIZED_WIRE_18;
-wire	[0:1] SYNTHESIZED_WIRE_19;
+wire [9:0] SYNTHESIZED_WIRE_2;
+wire [29:0] SYNTHESIZED_WIRE_3;
+wire [9:0] SYNTHESIZED_WIRE_4;
+wire [23:0] SYNTHESIZED_WIRE_5;
+wire [23:0] SYNTHESIZED_WIRE_7;
+wire SYNTHESIZED_WIRE_15;
+wire [11:0] SYNTHESIZED_WIRE_10;
+wire SYNTHESIZED_WIRE_11;
+wire SYNTHESIZED_WIRE_12;
+wire SYNTHESIZED_WIRE_13;
+wire SYNTHESIZED_WIRE_14;
+wire SYNTHESIZED_WIRE_16;
+wire SYNTHESIZED_WIRE_17;
+wire SYNTHESIZED_WIRE_18;
+wire [0:1]SYNTHESIZED_WIRE_19;
 
-assign	VGA_VS = SYNTHESIZED_WIRE_15;
+//assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
-assign	LEDR = SYNTHESIZED_WIRE_10;
-assign	Head = SYNTHESIZED_WIRE_11;
-assign	Left = SYNTHESIZED_WIRE_12;
-assign	Under = SYNTHESIZED_WIRE_13;
-assign	Barrier = SYNTHESIZED_WIRE_14;
-assign	Avancar = SYNTHESIZED_WIRE_16;
-assign	Girar = SYNTHESIZED_WIRE_17;
-assign	Recolher_Entulho = SYNTHESIZED_WIRE_18;
+//assign	LEDR = SYNTHESIZED_WIRE_10;
+//assign	Head = SYNTHESIZED_WIRE_11;
+//assign	Left = SYNTHESIZED_WIRE_12;
+//assign	Under = SYNTHESIZED_WIRE_13;
+//assign	Barrier = SYNTHESIZED_WIRE_14;
+//assign	Avancar = SYNTHESIZED_WIRE_16;
+//assign	Girar = SYNTHESIZED_WIRE_17;
+//assign	Recolher_Entulho = SYNTHESIZED_WIRE_18;
 
 Grafico	b2v_inst(
     .Clock50(CLOCK_50),
@@ -99,12 +99,12 @@ Controlador	b2v_inst4(
 	.Entradas(SYNTHESIZED_WIRE_10),
 	.v_sync(SYNTHESIZED_WIRE_15),
 	.avancar(Avancar),
-	.head(Head),
-	.left(Left),
-	.under(Under),
-	.barrier(Barrier),
-	.girar(Girar),
-	.remover(Recolher_Entulho),
+	.head(SYNTHESIZED_WIRE_11),
+	.left(SYNTHESIZED_WIRE_12),
+	.under(SYNTHESIZED_WIRE_13),
+	.barrier(SYNTHESIZED_WIRE_14),
+	.girar(SYNTHESIZED_WIRE_17),
+	.remover(SYNTHESIZED_WIRE_18),
 	.LEDG(LEDG),
 	.LEDR(LEDR),
 	.ColunasSprites(SYNTHESIZED_WIRE_3),
@@ -129,12 +129,12 @@ Controle b2v_inst7(
 Robo b2v_inst8(
 	.clock(CLOCK_50), 
 	.reset(SW), 
-	.head(Head), 
-	.left(Left), 
-	.under(Under), 
-	.barrier(Barrier), 
+	.head(SYNTHESIZED_WIRE_11), 
+	.left(SYNTHESIZED_WIRE_12), 
+	.under(SYNTHESIZED_WIRE_13), 
+	.barrier(SYNTHESIZED_WIRE_14), 
 	.avancar(Avancar), 
-	.girar(Girar), 
-	.recolher_entulho(Recolher_Entulho));
+	.girar(SYNTHESIZED_WIRE_17), 
+	.recolher_entulho(SYNTHESIZED_WIRE_18));
 
 endmodule

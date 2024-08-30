@@ -18,9 +18,8 @@ output reg [29:0] ColunasSprites;
 output reg [23:0] LinhasSprites;
 output reg [1:0] OrientacaoRobo;
 
-reg [3:0] Mapa [0:9][0:19];
-
-reg [79:0] MapaTemp [0:10];
+wire [3:0] Mapa [0:9][0:19];
+wire [79:0] MapaTemp [0:10];
 
 integer entulho_life; // Vida do entulho, representa quantas iteracoes sÃ£o necessarias para remove-lo
 
@@ -47,40 +46,6 @@ reg btn_step;
 reg v_sync_Primeiro_FlipFLop, v_sync_Segundo_FlipFLop;
 wire Flag;
 
-task taskLerMapa;
-	begin
-		 /*
-		 MapaTemp[0] = 80'h11111111111111111111;
-		 MapaTemp[1] = 80'h10001000000000001111;
-		 MapaTemp[2] = 80'h10101010111111101111;
-		 MapaTemp[3] = 80'h10101010000000000001;
-		 MapaTemp[4] = 80'h10101010111111101111;
-		 MapaTemp[5] = 80'h10100010111111101111;
-		 MapaTemp[6] = 80'h10101110111111101111;
-		 MapaTemp[7] = 80'h10101110111111101111;
-		 MapaTemp[8] = 80'h10101110111111101111;
-		 MapaTemp[9] = 80'h10000000000000001111;
-		 */
-
-		 MapaTemp[0] = 80'h55555555555555555555;
-		 MapaTemp[1] = 80'h56665666666666665555;
-		 MapaTemp[2] = 80'h56565656555555565555;
-		 MapaTemp[3] = 80'h56565656666666666665;
-		 MapaTemp[4] = 80'h56565656555555565555;
-		 MapaTemp[5] = 80'h56566656555555565555;
-		 MapaTemp[6] = 80'h56565556555555565555;
-		 MapaTemp[7] = 80'h56565556555555565555;
-		 MapaTemp[8] = 80'h56565556555555565555;
-		 MapaTemp[9] = 80'h56666666666666665555;
-
-		 for (i = 0; i < 10; i = i + 1) begin
-			  for (j = 0; j < 20; j = j + 1) begin
-					Mapa[i][j] = MapaTemp[i][79 - j*4 -: 4];
-			  end
-		 end
-	end
-endtask
-
 always @(negedge Clock50)
 begin
 	v_sync_Primeiro_FlipFLop <= v_sync;
@@ -88,6 +53,229 @@ begin
 end
 
 assign Flag = v_sync_Primeiro_FlipFLop && !v_sync_Segundo_FlipFLop;
+
+// Assign MapaTemp values
+assign MapaTemp[0] = 80'h55555555555555555555;
+assign MapaTemp[1] = 80'h56665666666666665555;
+assign MapaTemp[2] = 80'h56565656555555565555;
+assign MapaTemp[3] = 80'h56565656666666666665;
+assign MapaTemp[4] = 80'h56565656555555565555;
+assign MapaTemp[5] = 80'h56566656555555565555;
+assign MapaTemp[6] = 80'h56565556555555565555;
+assign MapaTemp[7] = 80'h56565556555555565555;
+assign MapaTemp[8] = 80'h56565556555555565555;
+assign MapaTemp[9] = 80'h56666666666666665555;
+
+// Use assign statements to extract 4-bit segments
+assign Mapa[0][0]  = MapaTemp[0][79:76];
+assign Mapa[0][1]  = MapaTemp[0][75:72];
+assign Mapa[0][2]  = MapaTemp[0][71:68];
+assign Mapa[0][3]  = MapaTemp[0][67:64];
+assign Mapa[0][4]  = MapaTemp[0][63:60];
+assign Mapa[0][5]  = MapaTemp[0][59:56];
+assign Mapa[0][6]  = MapaTemp[0][55:52];
+assign Mapa[0][7]  = MapaTemp[0][51:48];
+assign Mapa[0][8]  = MapaTemp[0][47:44];
+assign Mapa[0][9]  = MapaTemp[0][43:40];
+assign Mapa[0][10] = MapaTemp[0][39:36];
+assign Mapa[0][11] = MapaTemp[0][35:32];
+assign Mapa[0][12] = MapaTemp[0][31:28];
+assign Mapa[0][13] = MapaTemp[0][27:24];
+assign Mapa[0][14] = MapaTemp[0][23:20];
+assign Mapa[0][15] = MapaTemp[0][19:16];
+assign Mapa[0][16] = MapaTemp[0][15:12];
+assign Mapa[0][17] = MapaTemp[0][11:8];
+assign Mapa[0][18] = MapaTemp[0][7:4];
+assign Mapa[0][19] = MapaTemp[0][3:0];
+
+assign Mapa[1][0]  = MapaTemp[1][79:76];
+assign Mapa[1][1]  = MapaTemp[1][75:72];
+assign Mapa[1][2]  = MapaTemp[1][71:68];
+assign Mapa[1][3]  = MapaTemp[1][67:64];
+assign Mapa[1][4]  = MapaTemp[1][63:60];
+assign Mapa[1][5]  = MapaTemp[1][59:56];
+assign Mapa[1][6]  = MapaTemp[1][55:52];
+assign Mapa[1][7]  = MapaTemp[1][51:48];
+assign Mapa[1][8]  = MapaTemp[1][47:44];
+assign Mapa[1][9]  = MapaTemp[1][43:40];
+assign Mapa[1][10] = MapaTemp[1][39:36];
+assign Mapa[1][11] = MapaTemp[1][35:32];
+assign Mapa[1][12] = MapaTemp[1][31:28];
+assign Mapa[1][13] = MapaTemp[1][27:24];
+assign Mapa[1][14] = MapaTemp[1][23:20];
+assign Mapa[1][15] = MapaTemp[1][19:16];
+assign Mapa[1][16] = MapaTemp[1][15:12];
+assign Mapa[1][17] = MapaTemp[1][11:8];
+assign Mapa[1][18] = MapaTemp[1][7:4];
+assign Mapa[1][19] = MapaTemp[1][3:0];
+
+assign Mapa[2][0]  = MapaTemp[2][79:76];
+assign Mapa[2][1]  = MapaTemp[2][75:72];
+assign Mapa[2][2]  = MapaTemp[2][71:68];
+assign Mapa[2][3]  = MapaTemp[2][67:64];
+assign Mapa[2][4]  = MapaTemp[2][63:60];
+assign Mapa[2][5]  = MapaTemp[2][59:56];
+assign Mapa[2][6]  = MapaTemp[2][55:52];
+assign Mapa[2][7]  = MapaTemp[2][51:48];
+assign Mapa[2][8]  = MapaTemp[2][47:44];
+assign Mapa[2][9]  = MapaTemp[2][43:40];
+assign Mapa[2][10] = MapaTemp[2][39:36];
+assign Mapa[2][11] = MapaTemp[2][35:32];
+assign Mapa[2][12] = MapaTemp[2][31:28];
+assign Mapa[2][13] = MapaTemp[2][27:24];
+assign Mapa[2][14] = MapaTemp[2][23:20];
+assign Mapa[2][15] = MapaTemp[2][19:16];
+assign Mapa[2][16] = MapaTemp[2][15:12];
+assign Mapa[2][17] = MapaTemp[2][11:8];
+assign Mapa[2][18] = MapaTemp[2][7:4];
+assign Mapa[2][19] = MapaTemp[2][3:0];
+
+assign Mapa[3][0]  = MapaTemp[3][79:76];
+assign Mapa[3][1]  = MapaTemp[3][75:72];
+assign Mapa[3][2]  = MapaTemp[3][71:68];
+assign Mapa[3][3]  = MapaTemp[3][67:64];
+assign Mapa[3][4]  = MapaTemp[3][63:60];
+assign Mapa[3][5]  = MapaTemp[3][59:56];
+assign Mapa[3][6]  = MapaTemp[3][55:52];
+assign Mapa[3][7]  = MapaTemp[3][51:48];
+assign Mapa[3][8]  = MapaTemp[3][47:44];
+assign Mapa[3][9]  = MapaTemp[3][43:40];
+assign Mapa[3][10] = MapaTemp[3][39:36];
+assign Mapa[3][11] = MapaTemp[3][35:32];
+assign Mapa[3][12] = MapaTemp[3][31:28];
+assign Mapa[3][13] = MapaTemp[3][27:24];
+assign Mapa[3][14] = MapaTemp[3][23:20];
+assign Mapa[3][15] = MapaTemp[3][19:16];
+assign Mapa[3][16] = MapaTemp[3][15:12];
+assign Mapa[3][17] = MapaTemp[3][11:8];
+assign Mapa[3][18] = MapaTemp[3][7:4];
+assign Mapa[3][19] = MapaTemp[3][3:0];
+
+assign Mapa[4][0]  = MapaTemp[4][79:76];
+assign Mapa[4][1]  = MapaTemp[4][75:72];
+assign Mapa[4][2]  = MapaTemp[4][71:68];
+assign Mapa[4][3]  = MapaTemp[4][67:64];
+assign Mapa[4][4]  = MapaTemp[4][63:60];
+assign Mapa[4][5]  = MapaTemp[4][59:56];
+assign Mapa[4][6]  = MapaTemp[4][55:52];
+assign Mapa[4][7]  = MapaTemp[4][51:48];
+assign Mapa[4][8]  = MapaTemp[4][47:44];
+assign Mapa[4][9]  = MapaTemp[4][43:40];
+assign Mapa[4][10] = MapaTemp[4][39:36];
+assign Mapa[4][11] = MapaTemp[4][35:32];
+assign Mapa[4][12] = MapaTemp[4][31:28];
+assign Mapa[4][13] = MapaTemp[4][27:24];
+assign Mapa[4][14] = MapaTemp[4][23:20];
+assign Mapa[4][15] = MapaTemp[4][19:16];
+assign Mapa[4][16] = MapaTemp[4][15:12];
+assign Mapa[4][17] = MapaTemp[4][11:8];
+assign Mapa[4][18] = MapaTemp[4][7:4];
+assign Mapa[4][19] = MapaTemp[4][3:0];
+ 
+assign Mapa[5][0]  = MapaTemp[5][79:76];
+assign Mapa[5][1]  = MapaTemp[5][75:72];
+assign Mapa[5][2]  = MapaTemp[5][71:68];
+assign Mapa[5][3]  = MapaTemp[5][67:64];
+assign Mapa[5][4]  = MapaTemp[5][63:60];
+assign Mapa[5][5]  = MapaTemp[5][59:56];
+assign Mapa[5][6]  = MapaTemp[5][55:52];
+assign Mapa[5][7]  = MapaTemp[5][51:48];
+assign Mapa[5][8]  = MapaTemp[5][47:44];
+assign Mapa[5][9]  = MapaTemp[5][43:40];
+assign Mapa[5][10] = MapaTemp[5][39:36];
+assign Mapa[5][11] = MapaTemp[5][35:32];
+assign Mapa[5][12] = MapaTemp[5][31:28];
+assign Mapa[5][13] = MapaTemp[5][27:24];
+assign Mapa[5][14] = MapaTemp[5][23:20];
+assign Mapa[5][15] = MapaTemp[5][19:16];
+assign Mapa[5][16] = MapaTemp[5][15:12];
+assign Mapa[5][17] = MapaTemp[5][11:8];
+assign Mapa[5][18] = MapaTemp[5][7:4];
+assign Mapa[5][19] = MapaTemp[5][3:0];
+
+assign Mapa[6][1]  = MapaTemp[6][75:72];
+assign Mapa[6][0]  = MapaTemp[6][79:76];
+assign Mapa[6][2]  = MapaTemp[6][71:68];
+assign Mapa[6][3]  = MapaTemp[6][67:64];
+assign Mapa[6][4]  = MapaTemp[6][63:60];
+assign Mapa[6][5]  = MapaTemp[6][59:56];
+assign Mapa[6][6]  = MapaTemp[6][55:52];
+assign Mapa[6][7]  = MapaTemp[6][51:48];
+assign Mapa[6][8]  = MapaTemp[6][47:44];
+assign Mapa[6][9]  = MapaTemp[6][43:40];
+assign Mapa[6][10] = MapaTemp[6][39:36];
+assign Mapa[6][11] = MapaTemp[6][35:32];
+assign Mapa[6][12] = MapaTemp[6][31:28];
+assign Mapa[6][13] = MapaTemp[6][27:24];
+assign Mapa[6][14] = MapaTemp[6][23:20];
+assign Mapa[6][15] = MapaTemp[6][19:16];
+assign Mapa[6][16] = MapaTemp[6][15:12];
+assign Mapa[6][17] = MapaTemp[6][11:8];
+assign Mapa[6][18] = MapaTemp[6][7:4];
+assign Mapa[6][19] = MapaTemp[6][3:0];
+
+assign Mapa[7][0]  = MapaTemp[7][79:76];
+assign Mapa[7][1]  = MapaTemp[7][75:72];
+assign Mapa[7][2]  = MapaTemp[7][71:68];
+assign Mapa[7][3]  = MapaTemp[7][67:64];
+assign Mapa[7][4]  = MapaTemp[7][63:60];
+assign Mapa[7][5]  = MapaTemp[7][59:56];
+assign Mapa[7][6]  = MapaTemp[7][55:52];
+assign Mapa[7][7]  = MapaTemp[7][51:48];
+assign Mapa[7][8]  = MapaTemp[7][47:44];
+assign Mapa[7][9]  = MapaTemp[7][43:40];
+assign Mapa[7][10] = MapaTemp[7][39:36];
+assign Mapa[7][11] = MapaTemp[7][35:32];
+assign Mapa[7][12] = MapaTemp[7][31:28];
+assign Mapa[7][13] = MapaTemp[7][27:24];
+assign Mapa[7][14] = MapaTemp[7][23:20];
+assign Mapa[7][15] = MapaTemp[7][19:16];
+assign Mapa[7][16] = MapaTemp[7][15:12];
+assign Mapa[7][17] = MapaTemp[7][11:8];
+assign Mapa[7][18] = MapaTemp[7][7:4];
+assign Mapa[7][19] = MapaTemp[7][3:0];
+
+assign Mapa[8][1]  = MapaTemp[8][75:72];
+assign Mapa[8][0]  = MapaTemp[8][79:76];
+assign Mapa[8][2]  = MapaTemp[8][71:68];
+assign Mapa[8][3]  = MapaTemp[8][67:64];
+assign Mapa[8][4]  = MapaTemp[8][63:60];
+assign Mapa[8][5]  = MapaTemp[8][59:56];
+assign Mapa[8][6]  = MapaTemp[8][55:52];
+assign Mapa[8][7]  = MapaTemp[8][51:48];
+assign Mapa[8][8]  = MapaTemp[8][47:44];
+assign Mapa[8][9]  = MapaTemp[8][43:40];
+assign Mapa[8][10] = MapaTemp[8][39:36];
+assign Mapa[8][11] = MapaTemp[8][35:32];
+assign Mapa[8][12] = MapaTemp[8][31:28];
+assign Mapa[8][13] = MapaTemp[8][27:24];
+assign Mapa[8][14] = MapaTemp[8][23:20];
+assign Mapa[8][15] = MapaTemp[8][19:16];
+assign Mapa[8][16] = MapaTemp[8][15:12];
+assign Mapa[8][17] = MapaTemp[8][11:8];
+assign Mapa[8][18] = MapaTemp[8][7:4];
+assign Mapa[8][19] = MapaTemp[8][3:0];
+
+assign Mapa[9][0]  = MapaTemp[9][79:76];
+assign Mapa[9][1]  = MapaTemp[9][75:72];
+assign Mapa[9][2]  = MapaTemp[9][71:68];
+assign Mapa[9][3]  = MapaTemp[9][67:64];
+assign Mapa[9][4]  = MapaTemp[9][63:60];
+assign Mapa[9][5]  = MapaTemp[9][59:56];
+assign Mapa[9][6]  = MapaTemp[9][55:52];
+assign Mapa[9][7]  = MapaTemp[9][51:48];
+assign Mapa[9][8]  = MapaTemp[9][47:44];
+assign Mapa[9][9]  = MapaTemp[9][43:40];
+assign Mapa[9][10] = MapaTemp[9][39:36];
+assign Mapa[9][11] = MapaTemp[9][35:32];
+assign Mapa[9][12] = MapaTemp[9][31:28];
+assign Mapa[9][13] = MapaTemp[9][27:24];
+assign Mapa[9][14] = MapaTemp[9][23:20];
+assign Mapa[9][15] = MapaTemp[9][19:16];
+assign Mapa[9][16] = MapaTemp[9][15:12];
+assign Mapa[9][17] = MapaTemp[9][11:8];
+assign Mapa[9][18] = MapaTemp[9][7:4];
+assign Mapa[9][19] = MapaTemp[9][3:0];
 
 always @(posedge Clock50)
 begin
@@ -127,9 +315,7 @@ begin
                 Mapa[i][j] = temp[i+1][79 - j*4 -: 4]; // Preencher a matriz ignorando a primeira linha
             end
         end
-        */		
-		  
-		  taskLerMapa;
+        */			  
 
         // Inicializacao dos valores
         LinhaRobo <= 4'h03;
@@ -362,21 +548,10 @@ begin
         LEDR <= 8'b00010000;
     end
 
-    // Remove entulho
+    // Atualiza modo de execucao
     if (Entradas[6])
     begin
-        if (LinhaCursor == LinhaEntulhoLeve && ColunaCursor == ColunaEntulhoLeve) begin
-            ColunaEntulhoLeve <= 20;
-            LinhaEntulhoLeve <= 20;
-        end
-        else if (LinhaCursor == LinhaEntulhoMedio && ColunaCursor == ColunaEntulhoMedio) begin
-            ColunaEntulhoMedio <= 20;
-            LinhaEntulhoMedio <= 20;
-        end
-        else if (LinhaCursor == LinhaEntulhoPesado && ColunaCursor == ColunaEntulhoPesado) begin
-            ColunaEntulhoPesado <= 20;
-            LinhaEntulhoPesado <= 20;
-        end
+        step_mode <= ~step_mode;
         // Acende LEDs Verde e Vermelho
         LEDG <= 8'b10111011;
         LEDR <= 8'b10111011;
@@ -454,22 +629,6 @@ begin
         // Acende LEDs Verde e Vermelho
         LEDG <= 8'b01100110;
         LEDR <= 8'b01100110;
-    end
-    else
-    begin
-        // Apaga as LEDs Verde e Vermelho, exceto [4]
-        LEDG <= 8'b00010000;
-        LEDR <= 8'b00010000;
-    end
-
-    // Atualiza modo de execuÃ§Ã£o
-    if (Entradas[11])
-    begin
-        step_mode <= ~step_mode;
-
-        // Acende LEDs Verde e Vermelho
-        LEDG <= 8'b11100111;
-        LEDR <= 8'b11100111;
     end
     else
     begin

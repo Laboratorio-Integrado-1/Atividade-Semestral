@@ -21,6 +21,7 @@ wire [11:0] LEDR;
 wire [7:0] VGA_B;
 wire [7:0] VGA_G;
 wire [7:0] VGA_R;
+wire PRINT;
 
 TOP DUV (
 	CLOCK_50,
@@ -41,12 +42,19 @@ TOP DUV (
 	LEDR,
 	VGA_B,
 	VGA_G,
-	VGA_R
+	VGA_R,
+	PRINT
 );
 
 
 integer Arquivo, i, linha, coluna;
 reg [23:0] Imagem [0:479] [0:639];
+integer contador_imagens;
+reg [8*20:1] nome_arquivo;
+
+integer frame_counter;
+reg capture_enable;
+reg v_sync_prev;
 
 always
 begin
@@ -63,9 +71,23 @@ begin
 	CLOCK_50 = 0;
 	CLOCK_25 = 0;
 	SW = 1;
-	#105 SW = 0;	
-	Arquivo = $fopen("VGA.bmp", "w");
-	//Cabecalho = 432'h42_4D_36_10_0E_00_00_00_00_00_36_00_00_00_28_00_00_00_80_02_00_00_E0_01_00_00_01_00_18_00_00_00_00_00_00_10_0E_00_25_16_00_00_25_16_00_00_00_00_00_00_00_00_00_00;
+	#105 SW = 0;
+	contador_imagens = 0;
+	frame_counter = 0;
+
+	repeat (30) begin 
+		@(negedge PRINT);
+		GerarImagem;
+		contador_imagens = contador_imagens + 1; // Incrementa o contador de imagens
+	end
+end
+
+task GerarImagem();
+begin
+	$sformat(nome_arquivo, "VGA_%0d.bmp", contador_imagens); // Nome do arquivo com o contador
+	Arquivo = $fopen(nome_arquivo, "w");
+	
+	// Gerar o cabeçalho da imagem
 	$fwrite(Arquivo, "%s", 40'h42_4D_36_10_0E);
 	GerarZeros(5);
 	$fwrite(Arquivo, "%s", 8'h36);
@@ -85,23 +107,9 @@ begin
 	$fwrite(Arquivo, "%s", 16'h25_16);
 	GerarZeros(2);
 	$fwrite(Arquivo, "%s", 16'h25_16);
-	GerarZeros(10);	
-	GerarImagem;
-	$fclose(Arquivo);
-	$stop;
-end
-
-task GerarZeros(input integer N);
-begin
-	for (i = 0; i < N; i = i + 1)
-	begin
-		$fwrite(Arquivo, "%c", 0);
-	end
-end
-endtask 
-
-task GerarImagem();
-begin
+	GerarZeros(10);
+	
+	// Capturar e escrever os pixels
 	for (linha = 0; linha < 480; linha = linha + 1)
 	begin
 		@(posedge VGA_BLANK_N);
@@ -111,12 +119,24 @@ begin
 			Imagem[linha][coluna] = {VGA_B, VGA_G, VGA_R}; // BGR
 		end
 	end
+	
 	for (linha = 479; linha >= 0; linha = linha - 1)
 	begin
 		for (coluna = 0; coluna < 640; coluna = coluna + 1)
 		begin
 			$fwrite(Arquivo, "%s", Imagem[linha][coluna]);
 		end
+	end
+	
+	$fclose(Arquivo); // Fechar o arquivo
+end
+endtask 
+
+task GerarZeros(input integer N);
+begin
+	for (i = 0; i < N; i = i + 1)
+	begin
+		$fwrite(Arquivo, "%c", 0);
 	end
 end
 endtask 

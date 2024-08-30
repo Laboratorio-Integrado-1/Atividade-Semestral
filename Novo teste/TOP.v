@@ -17,7 +17,8 @@ module TOP(
 	LEDR,
 	VGA_B,
 	VGA_G,
-	VGA_R
+	VGA_R,
+	PRINT
 );
 
 input wire	CLOCK_50;
@@ -39,6 +40,7 @@ output wire	[11:0] LEDR;
 output wire	[7:0] VGA_B;
 output wire	[7:0] VGA_G;
 output wire	[7:0] VGA_R;
+output wire PRINT;
 
 wire [9:0] SYNTHESIZED_WIRE_2;
 wire [29:0] SYNTHESIZED_WIRE_3;
@@ -60,6 +62,7 @@ wire SYNTHESIZED_WIRE_20;
 
 //assign	VGA_VS = SYNTHESIZED_WIRE_15;
 assign	VGA_CLK = CLOCK_25;
+assign PRINT = SYNTHESIZED_WIRE_20;
 //assign	LEDR = SYNTHESIZED_WIRE_10;
 //assign	Head = SYNTHESIZED_WIRE_11;
 //assign	Left = SYNTHESIZED_WIRE_12;
@@ -68,6 +71,7 @@ assign	VGA_CLK = CLOCK_25;
 //assign	Avancar = SYNTHESIZED_WIRE_16;
 //assign	Girar = SYNTHESIZED_WIRE_17;
 //assign	Recolher_Entulho = SYNTHESIZED_WIRE_18;
+
 
 Grafico	b2v_inst(
     .Clock50(CLOCK_50),
@@ -93,7 +97,6 @@ Interface_VGA b2v_inst1(
 	.G(VGA_G),
 	.LinhaOut(SYNTHESIZED_WIRE_4),
 	.R(VGA_R));
-
 
 Controlador	b2v_inst4(
 	.Clock50(CLOCK_50),

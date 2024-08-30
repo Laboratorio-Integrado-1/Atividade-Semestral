@@ -101,9 +101,9 @@ always @(*)
 begin
 	case (EstadoAtual)
 		AGUARDAR_ATIVACAO:	if (Flag)
-										EstadoFuturo = ESTADO_0;
-									else
-										EstadoFuturo = AGUARDAR_ATIVACAO;
+									EstadoFuturo = ESTADO_0;
+								else
+									EstadoFuturo = AGUARDAR_ATIVACAO;
 		ESTADO_0:	if (Contador < 1000)
 							EstadoFuturo = ESTADO_0;
 						else
@@ -135,7 +135,8 @@ begin
 		ESTADO_7:	if (Contador < 8000)
 							EstadoFuturo = ESTADO_7;
 						else
-							EstadoFuturo = AGUARDAR_ATIVACAO;
+						EstadoFuturo = AGUARDAR_ATIVACAO;
+						
 		default:		EstadoFuturo = AGUARDAR_ATIVACAO;
 	endcase 
 end

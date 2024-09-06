@@ -909,6 +909,8 @@ begin
         LinhasSprites[11:8]  <= LinhaEntulhoPesado + 4'b0001;
         LinhasSprites[7:4]   <= LinhaRobo + 4'b0001;
         LinhasSprites[3:0]   <= LinhaCursor + 4'b0001;
+
+        // Atribuição da orientação do robô
         OrientacaoRobo <= Orientacao_Robo;
     end
 end

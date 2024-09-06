@@ -1,4 +1,4 @@
-module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites, OrientacaoRobo);
+module Controlador (Clock50, reset, Entradas, v_sync, avancar, head, left, under, barrier ,girar, remover, LEDG, LEDR, ColunasSprites, LinhasSprites, OrientacaoRobo, AtivaRobo);
 
 parameter N = 2'b00, S = 2'b01, L = 2'b10, O = 2'b11;
 
@@ -17,6 +17,7 @@ output reg [7:0] LEDR;
 output reg [29:0] ColunasSprites;
 output reg [23:0] LinhasSprites;
 output reg [1:0] OrientacaoRobo;
+output reg AtivaRobo;
 
 wire [3:0] Mapa [0:9][0:19];
 wire [79:0] MapaTemp [0:10];
@@ -281,42 +282,7 @@ always @(posedge Clock50)
 begin
 	if (reset)
 	begin		
-		// ConfiguraÃ§Ã£o do mapa 
-        // 0: Caminho Livre -	Celula onde o robÃ´ pode se mover livremente.
-        // 1: Parede - Obstaculo que impede o movimento do robÃ´.
-        // 2: Celula Preta - CÃ©lula que indica o inicio ou final de uma tubulacao.
-        // 3: Entulho Leve - Entulho que requer 3 ciclos para ser removido.
-        // 4: Entulho Medio - Entulho que requer 6 ciclos para ser removido.
-        // 5: Entulho Pesado - Entulho que requer 9 ciclos para ser removido.
-
-        /*
-        $readmemh("Mapa.txt", temp);
-
-        LinhaRobo = temp[0][79:72]; //  (0Âº linha, 0-1 caracteres)
-        ColunaRobo = temp[0][71:64]; // (0Âº linha, 2-3 caracteres)
-        Orientacao_Hex = temp[0][63:60]; // (0Âº linha, 4Âº caractere)
-        
-        // Converter o valor hexadecimal da orientacao para a string correspondente
-        case (Orientacao_Hex)
-            4'h0: Orientacao_Robo = N; // 0 -> N
-            4'h1: Orientacao_Robo = O; // 1 -> O
-            4'h2: Orientacao_Robo = S; // 2 -> S
-            4'h3: Orientacao_Robo = L; // 3 -> L
-            default: Orientacao_Robo = N;
-        endcase
-
-        // Preencher a matriz com os valores restantes
-        for (i = 0; i < 10; i = i + 1) begin
-            for (j = 0; j < 20; j = j + 1) begin
-                if (temp[i+1][79 - j*4 -: 4] == 2) begin // IdentificaÃ§Ã£o da celula preta
-                    LinhaCelulaPreta = i;
-                    ColunaCelulaPreta = j;
-                end
-                Mapa[i][j] = temp[i+1][79 - j*4 -: 4]; // Preencher a matriz ignorando a primeira linha
-            end
-        end
-        */			  
-
+		  
         // Inicializacao dos valores
         LinhaRobo <= 4'h03;
         ColunaRobo <= 5'h12;
@@ -324,12 +290,12 @@ begin
         ColunaCelulaPreta <= 5'h12;
         Orientacao_Robo <= L;
 
-        LinhaEntulhoLeve <= 4'h14;
-        ColunaEntulhoLeve <= 5'h14;
+        LinhaEntulhoLeve <= 4'h03;
+        ColunaEntulhoLeve <= 5'h10;
         LinhaEntulhoMedio <= 4'h5;
         ColunaEntulhoMedio <= 5'h0F;
-        LinhaEntulhoPesado <= 4'h03;
-        ColunaEntulhoPesado <= 5'h11;
+        LinhaEntulhoPesado <= 4'h14;
+        ColunaEntulhoPesado <= 5'h14;
 
         ColunaCursor <= 5'h0A;
         LinhaCursor <= 4'h03;
@@ -339,6 +305,7 @@ begin
         FlagAtualizaPosicao <= 0;
         ContadorFramesRobo <= 0;
         ContadorFrames <= 0;
+        AtivaRobo <= 0;
 
 	    LEDG <= 8'b00010000;
         LEDR <= 8'b00010000;
@@ -365,11 +332,13 @@ begin
             ContadorFramesRobo <= 0;
             FlagAtualizaPosicao <= 1;
             Define_Sensores;
+            AtivaRobo <= 1;
         end
 
         if (FlagAtualizaPosicao && Flag)
         begin
             $display ("H = %b L = %b U = %b B = %b", head, left, under, barrier);
+            $display ("Linha = %d Coluna = %d Orientacao = %d", LinhaRobo, ColunaRobo, Orientacao_Robo);
             if (step_mode && btn_step) begin
                 Atualiza_Posicao_Robo;
                 btn_step <= 0;
@@ -378,11 +347,14 @@ begin
             if(!step_mode) begin
                 Atualiza_Posicao_Robo;
             end
+	        FlagAtualizaPosicao <= 0;
+            AtivaRobo <= 0;
         end
 
         if (Situacoes_Anomalas(1)) begin
-            $display("Estado AnÃ´malo Detectado. Aguardando reset...");
+            $display("Estado Anomalo Detectado. Aguardando reset...");
             @ (negedge reset);
+            $break;
         end 
 
         if (Flag)
@@ -805,7 +777,9 @@ task Atualiza_Posicao_Robo;
 begin
     if (entulho_life > 0 && remover) begin
         entulho_life <= entulho_life - 1;
-        if (entulho_life == 0) begin
+        $display("Removendo entulho... %d ciclos restantes", entulho_life);
+        if (entulho_life == 1) begin
+            $display("Entulho removido.");
             case (Orientacao_Robo)
                 N: begin
                     if(LinhaRobo - 1 == LinhaEntulhoLeve && ColunaRobo == ColunaEntulhoLeve) begin
